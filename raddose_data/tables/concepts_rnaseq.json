@@ -1,0 +1,14 @@
+{
+  "DNA_damage_response": {
+    "n_genes": 5,
+    "mean_abs_dose_corr": 0.3692421533882483,
+    "genome_mean": 0.1250586103553204,
+    "enrichment_p": 0.0001999600079984003
+  },
+  "oxidative_ROS": {
+    "skipped": "too few genes present"
+  },
+  "cell_cycle": {
+    "skipped": "too few genes present"
+  }
+}

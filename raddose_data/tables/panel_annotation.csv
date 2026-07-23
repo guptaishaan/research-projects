@@ -1,0 +1,21 @@
+gene,symbol,select_freq,description
+AT3G27630,,1.0,cyclin-dependent kinase inhibitor SMR3-like protein
+AT4G19130,,1.0,Replication factor-A protein 1-like protein
+AT3G58270,,0.8333333333333334,phospholipase-like protein (PEARLI 4) with TRAF-like domain protein
+AT5G26920,CBP60G,0.8333333333333334,Cam-binding protein 60-like G
+AT5G60250,,0.8333333333333334,zinc finger (C3HC4-type RING finger) family protein
+AT3G28210,PMZ,0.8333333333333334,zinc finger (AN1-like) family protein
+AT1G30990,,0.6666666666666666,Polyketide cyclase/dehydrase and lipid transport superfamily protein
+ATMG00570,,0.6666666666666666,
+AT1G56170,NF-YC2,0.6666666666666666,"nuclear factor Y, subunit C2"
+AT5G52750,,0.6666666666666666,Heavy metal transport/detoxification superfamily protein
+AT5G52640,HSP90.1,0.6666666666666666,heat shock-like protein
+AT5G03780,TRFL10,0.5,TRF-like 10
+AT2G19410,,0.5,U-box domain-containing protein kinase family protein
+AT2G03505,,0.5,Carbohydrate-binding X8 domain superfamily protein
+AT1G06530,PMD2,0.5,Tropomyosin-like protein
+AT2G25980,,0.5,Mannose-binding lectin superfamily protein
+AT1G02770,,0.5,uncharacterized protein
+AT2G46400,WRKY46,0.5,WRKY DNA-binding protein 46
+AT5G58610,,0.3333333333333333,PHD finger transcription factor
+AT4G16515,RGF6,0.3333333333333333,root meristem growth factor

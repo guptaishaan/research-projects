@@ -1,0 +1,26 @@
+{
+  "dataset": "GSE239993",
+  "panel_size": 20,
+  "contrasts": [
+    {
+      "treatment": "Zeocin",
+      "n_genes": 3982,
+      "genomewide_rho": 0.33034717800491187,
+      "panel_concordant": 15,
+      "panel_n": 20,
+      "binom_p": 0.020694732666015625,
+      "perm_p": 0.1969015492253873,
+      "enrich_mw_p": 0.04884071360016584
+    },
+    {
+      "treatment": "UV-C",
+      "n_genes": 3982,
+      "genomewide_rho": 0.33675705834930586,
+      "panel_concordant": 13,
+      "panel_n": 20,
+      "binom_p": 0.13158798217773438,
+      "perm_p": 0.5807096451774113,
+      "enrich_mw_p": 0.6106559952675493
+    }
+  ]
+}
