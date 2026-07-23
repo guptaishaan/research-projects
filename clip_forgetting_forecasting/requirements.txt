@@ -1,0 +1,10 @@
+open_clip_torch
+torch
+torchvision
+medmnist
+scikit-learn
+scipy
+pandas
+matplotlib
+nbformat
+nbclient
