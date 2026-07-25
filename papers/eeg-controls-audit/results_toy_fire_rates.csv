@@ -1,0 +1,13 @@
+decoder,control,fire_rate
+Focused,remove_mu,1.0
+Focused,remove_motor,1.0
+Focused,remove_beta,0.0
+Focused,remove_occipital,0.0
+Broad,remove_mu,1.0
+Broad,remove_motor,1.0
+Broad,remove_beta,0.8666666666666667
+Broad,remove_occipital,1.0
+Tree,remove_mu,1.0
+Tree,remove_motor,1.0
+Tree,remove_beta,0.0
+Tree,remove_occipital,0.0

@@ -1,0 +1,8 @@
+,bandpower,csp,tree,eegnet
+remove_mu,0.92,1.0,1.0,1.0
+remove_beta,0.83,1.0,1.0,1.0
+remove_mu_beta,0.92,1.0,1.0,1.0
+remove_sensorimotor,1.0,1.0,1.0,1.0
+remove_occipital_control,1.0,1.0,1.0,1.0
+remove_theta,,,,
+remove_high_control,,,,

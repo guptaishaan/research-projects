@@ -1,0 +1,9 @@
+model,family,readable,MAE,additivity,skill
+RandomForest,tree,False,0.0081,0.4762,0.9325
+CNN,neural net,False,0.0081,0.4262,0.9325
+MLP,neural net,False,0.0084,0.2977,0.93
+XGBoost,tree,False,0.0087,0.3144,0.9275
+LSTM,neural net,False,0.0087,0.4841,0.9275
+Physics-KAN,physics-KAN,False,0.01,0.5298,0.9166666666666666
+KAN,KAN,True,0.0145,0.9888,0.8791666666666667
+Logistic/Ridge,linear,True,0.015,0.9974,0.875

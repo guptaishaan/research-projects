@@ -1,0 +1,17 @@
+{
+  "company_years": 78682,
+  "alive": 73462,
+  "failed": 5220,
+  "year_min": 1999,
+  "year_max": 2018,
+  "imminent_positives": 609,
+  "rows_after_labelling": 74071,
+  "n_train": 25611,
+  "rate_train": 0.0057,
+  "n_calm_test": 8596,
+  "rate_calm_test": 0.0065,
+  "n_recession": 7163,
+  "rate_recession": 0.0113,
+  "n_features": 15,
+  "n_raw_variables": 18
+}

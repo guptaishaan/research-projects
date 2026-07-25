@@ -1,0 +1,13 @@
+.DS_Store
+**/.DS_Store
+__pycache__/
+*.pyc
+
+# LaTeX build intermediates
+papers/**/*.aux
+papers/**/*.log
+papers/**/*.out
+papers/**/*.blg
+papers/**/*.fls
+papers/**/*.fdb_latexmk
+papers/**/*.toc

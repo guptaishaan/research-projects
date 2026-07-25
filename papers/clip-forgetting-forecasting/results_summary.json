@@ -1,0 +1,43 @@
+{
+  "baseline_zero_shot": {
+    "CIFAR100": 0.6173333333333333,
+    "CIFAR10": 0.8613333333333333,
+    "STL10": 0.956
+  },
+  "n_runs": 48,
+  "n_datasets": 16,
+  "final_epoch": 20,
+  "family_final_forgetting": {
+    "mean": {
+      "digits": 0.309,
+      "medical": 0.283,
+      "natural": 0.201
+    },
+    "min": {
+      "digits": 0.238,
+      "medical": 0.147,
+      "natural": 0.089
+    },
+    "max": {
+      "digits": 0.366,
+      "medical": 0.382,
+      "natural": 0.318
+    }
+  },
+  "static_corr": {
+    "semantic_dist": 0.379,
+    "clip_embed_dist": -0.411,
+    "spectral_dist": -0.032,
+    "frechet_dist": -0.444
+  },
+  "persistence": {
+    "MAE": 0.0336,
+    "Spearman": 0.945,
+    "R2": 0.8477
+  },
+  "extrapolation": {
+    "MAE": 0.1334,
+    "Spearman": 0.6336,
+    "R2": -2.2809
+  }
+}

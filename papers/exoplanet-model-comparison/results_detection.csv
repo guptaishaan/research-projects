@@ -1,0 +1,8 @@
+model,family,readable,ROC_AUC,additivity
+MLP,neural net,False,0.975,0.573
+XGBoost,tree,False,0.964,0.822
+RandomForest,tree,False,0.959,0.903
+CNN,neural net,False,0.956,0.768
+Logistic/Ridge,linear,True,0.946,0.999
+KAN,KAN,True,0.943,0.9
+LSTM,neural net,False,0.906,0.728

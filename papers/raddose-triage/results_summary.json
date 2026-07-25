@@ -1,0 +1,55 @@
+{
+  "n_samples": 158,
+  "n_genes": 4002,
+  "n_controls": 58,
+  "n_exposed": 100,
+  "headline": {
+    "accuracy": 0.8418,
+    "balanced_accuracy": 0.8243,
+    "ROC_AUC": 0.8826,
+    "macro_study_AUC": 0.909,
+    "average_precision": 0.9382,
+    "MCC": 0.6563,
+    "sensitivity": 0.89,
+    "specificity": 0.7586
+  },
+  "confusion": [
+    [
+      44,
+      14
+    ],
+    [
+      11,
+      89
+    ]
+  ],
+  "uncertainty": [
+    {
+      "metric": "accuracy",
+      "estimate": 0.8532,
+      "ci_lo": 0.7768,
+      "ci_hi": 0.9365
+    },
+    {
+      "metric": "balanced_accuracy",
+      "estimate": 0.849,
+      "ci_lo": 0.7569,
+      "ci_hi": 0.9375
+    },
+    {
+      "metric": "ROC_AUC",
+      "estimate": 0.909,
+      "ci_lo": 0.8456,
+      "ci_hi": 0.9703
+    }
+  ],
+  "ddr_genes_selected_every_fold": [
+    "AT4G02390",
+    "AT4G22960",
+    "AT5G66130"
+  ],
+  "dose_regression": {
+    "MAE_Gy": 33.62,
+    "spearman": 0.523
+  }
+}

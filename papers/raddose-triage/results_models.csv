@@ -1,0 +1,7 @@
+model,accuracy,balanced_accuracy,ROC_AUC,macro_study_AUC,average_precision,MCC,sensitivity,specificity
+Stability ensemble,0.8418,0.8243,0.8826,0.909,0.9382,0.6563,0.89,0.7586
+Top-100 ExtraTrees,0.8228,0.8057,0.8858,0.9219,0.941,0.6161,0.87,0.7414
+Top-50 logistic,0.7911,0.7988,0.8593,0.9159,0.9265,0.5791,0.77,0.8276
+Top-100 RBF-SVM,0.8038,0.7834,0.8778,0.9232,0.9367,0.5736,0.86,0.7069
+DDR-7 logistic,0.7405,0.7697,0.7405,0.8326,0.8748,0.5214,0.66,0.8793
+Always exposed,0.6329,0.5,0.5,0.5,0.6329,0.0,1.0,0.0

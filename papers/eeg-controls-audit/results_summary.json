@@ -1,0 +1,32 @@
+{
+  "toy_fire_rates": {
+    "Focused|remove_mu": 1.0,
+    "Focused|remove_motor": 1.0,
+    "Focused|remove_beta": 0.0,
+    "Focused|remove_occipital": 0.0,
+    "Broad|remove_mu": 1.0,
+    "Broad|remove_motor": 1.0,
+    "Broad|remove_beta": 0.8666666666666667,
+    "Broad|remove_occipital": 1.0,
+    "Tree|remove_mu": 1.0,
+    "Tree|remove_motor": 1.0,
+    "Tree|remove_beta": 0.0,
+    "Tree|remove_occipital": 0.0
+  },
+  "false_alarm_mean": {
+    "bandpower": 0.688,
+    "csp": 0.247,
+    "tree": 0.63,
+    "eegnet": 0.013
+  },
+  "catch_mean": {
+    "bandpower": 0.934,
+    "csp": 1.0,
+    "tree": 1.0,
+    "eegnet": 1.0
+  },
+  "eoec_false_alarms": {
+    "Band-power": 3,
+    "CSP": 2
+  }
+}

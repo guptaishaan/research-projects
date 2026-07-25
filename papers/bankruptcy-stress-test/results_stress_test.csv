@@ -1,0 +1,4 @@
+model,calm_AUC,calm_PR,recession_AUC,change
+Logistic Regression,0.646,0.01,0.615,-0.031
+Random Forest,0.755,0.02,0.798,0.042
+MLP,0.625,0.012,0.575,-0.05

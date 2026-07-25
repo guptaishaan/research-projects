@@ -1,0 +1,11 @@
+features,model,MAE,Spearman,R2
+static only,Ridge (linear),0.0702,0.683,0.426
+static only,Random Forest,0.0703,0.6699,0.3936
+static only,Grad Boosting,0.0746,0.6135,0.2939
+static only,MLP (neural net),0.1217,0.3459,-1.1334
+static + warm-up,Ridge (linear),0.0254,0.9204,0.9106
+static + warm-up,Random Forest,0.0247,0.9284,0.9121
+static + warm-up,Grad Boosting,0.0247,0.9242,0.9174
+static + warm-up,MLP (neural net),0.1128,0.4811,-0.6596
+control,Persistence,0.0336,0.945,0.8477
+control,Slope extrapolation,0.1334,0.6336,-2.2809
