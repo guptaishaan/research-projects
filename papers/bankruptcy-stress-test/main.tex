@@ -114,12 +114,22 @@ the recession. We pose a direct question: \emph{does a distress model trained on
 years still rank failing firms during the recession, and which model family is most
 robust?}
 
-Our contributions are: (i) an imminent-failure formulation of the widely used U.S.
-bankruptcy dataset with leakage-controlled, company-grouped validation; (ii) a calm-era
-baseline in which a random forest clearly outperforms linear and neural models; (iii) a
-temporal stress test showing the random forest survives---indeed improves---on
-2008--2009; and (iv) a cautionary analysis of a per-year evaluation artifact that can
-masquerade as crisis-induced failure.
+\subsection{Contributions}
+\begin{enumerate}
+\item An imminent-failure formulation of the widely used U.S. bankruptcy panel, in which
+      only a firm's final reporting year counts as positive, paired with
+      company-grouped validation so that no issuer is ever split across a training and
+      an evaluation partition.
+\item A calm-era baseline across three model families, in which a random forest clearly
+      outperforms linear and neural alternatives, locating the difficulty of the problem
+      in the nonlinearity of the distress boundary rather than in the feature set.
+\item A temporal stress test that freezes the calm-era models and applies them to the
+      2008--2009 recession, finding that the random forest does not merely survive the
+      regime change but improves on it, while the linear and neural models slip.
+\item A cautionary analysis of a per-year evaluation artifact that can masquerade as a
+      crisis-induced collapse, and which disappears once training-set overlap is
+      removed.
+\end{enumerate}
 
 \section{Related Work}
 Distress prediction dates to Beaver's univariate ratio analysis~\cite{beaver1966},
@@ -357,6 +367,34 @@ to unseen issuers. We report a single seed and a single design, with no confiden
 intervals, so differences smaller than roughly $0.02$ AUC should not be interpreted.
 Finally, survivorship and reporting biases affect which firms appear in the panel at all.
 
+\section{Model Card}
+\cref{tab:card} states the intended and prohibited uses of the calm-era random forest in
+the format of~\cite{mitchell2019modelcards}. Every entry restates a decision already
+made in the sections above; it is collected here because the distinction between a
+ranking that survives a regime change and an operating point that does not is exactly
+the distinction a deployment reader needs.
+
+\begin{table}[H]
+\centering
+\caption{Model card~\cite{mitchell2019modelcards} for the calm-era random forest.}
+\label{tab:card}
+\begin{tabular}{@{}p{0.26\linewidth}p{0.68\linewidth}@{}}
+\toprule
+Item & Statement\\
+\midrule
+Intended use & Research-grade ranking of U.S. public company-years by imminent-failure risk.\\
+Training population & Calm-era company-years, 1999--2006, split by company.\\
+Evaluation population & Held-out calm-era firms and the 2008--2009 recession window; 2007 is excluded as a transition year.\\
+Positive class & A firm's final reporting year before delisting, Eq.~\eqref{eq:target}; base rate $0.82\%$.\\
+Features & The $15$ Altman-style ratios of \cref{eq:preproc}, winsorized, median-imputed and standardized on training rows only.\\
+Primary metric & ROC-AUC. PR-AUC is reported alongside and is the more demanding summary at this base rate.\\
+Decision threshold & None. The model is evaluated purely by ranking; no operating point is fitted or recommended.\\
+Known weak point & Scores are not calibrated probabilities. The recession base rate roughly doubles, so a threshold set on calm-era scores fires at the wrong rate and must be re-calibrated.\\
+Prohibited use & Credit decisions about individual firms, regulatory capital calculations, or any use that reads the score as a probability of bankruptcy.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Conclusion}
 On a large panel of U.S. public firms, a random forest trained on calm pre-crisis years
 predicts imminent bankruptcy at $0.755$ ROC-AUC and \emph{survives} the 2008--2009
@@ -382,14 +420,14 @@ recorded results, and recomputes the per-year analysis when the raw CSV is suppl
 \toprule
 Your Name & Title$^{*}$ & Research Field & Personal website \\
 \midrule
-Ayush Bodalia      & & & \\
-Arnav Deokule      & & & \\
-Shravan Ginde      & & & \\
-Sahasra Namburu    & & & \\
-Kavindran Rajangam & & & \\
-Sreehaas Voruganti & & & \\
-Srikanth Samy      & & & \\
-Ishaan Gupta       & & & \\
+Ayush Bodalia & & Financial technology & \\
+Arnav Deokule & & Financial technology & \\
+Shravan Ginde & & Financial technology & \\
+Sahasra Namburu & & Financial technology & \\
+Kavindran Rajangam & & Financial technology & \\
+Sreehaas Voruganti & & Financial technology & \\
+Srikanth Samy & & Financial technology & \\
+Ishaan Gupta & & Financial technology & \\
 \bottomrule
 \end{tabular}
 
