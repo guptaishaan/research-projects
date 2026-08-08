@@ -1,8 +1,9 @@
 # Papers
 
-One IEEE-style, single-column manuscript per research notebook in this repository.
-Each directory holds the LaTeX source, a figure-generation script, the compiled PDF,
-and a zip of the LaTeX sources.
+One single-column manuscript per research notebook in this repository, in the
+ICAISE 2026 submission format (the ACM Primary Article Template, typeset with
+`acmart`'s `manuscript` option). Each directory holds the LaTeX source, a
+figure-generation script, the compiled PDF, and a zip of the LaTeX sources.
 
 | Directory | Paper | Source notebook |
 |---|---|---|
@@ -17,7 +18,7 @@ and a zip of the LaTeX sources.
 
     main.tex            the manuscript
     refs.bib            bibliography
-    paperstyle.sty      shared layout (copied from _common/ at build time)
+    paperstyle.sty      shared acmart companion (copied from _common/ at build time)
     make_figures.py     regenerates every figure and result table
     figures/*.pdf       vector figures
     results_*.csv|json  the numbers the manuscript quotes
@@ -37,9 +38,13 @@ Set `PAPER_PYTHON` if the scientific stack lives in a virtualenv:
 
     PAPER_PYTHON=/path/to/venv/bin/python ./build.sh
 
-Requirements: a TeX Live installation with `newtx`, `titlesec`, `microtype`, `natbib`,
-`cleveref`, and `dsfont`; Python with `numpy`, `pandas`, `matplotlib`, `scipy`,
-`scikit-learn`, and `pyarrow`.
+Requirements: a TeX Live installation with `acmart`, `cleveref`, and `dsfont`; Python
+with `numpy`, `pandas`, `matplotlib`, `scipy`, `scikit-learn`, and `pyarrow`.
+
+`tectonic` also builds every paper without a local TeX Live, fetching `acmart` and
+`ACM-Reference-Format.bst` on first run:
+
+    cd raddose-triage && tectonic -k main.tex
 
 ## How the numbers are produced
 
@@ -64,5 +69,5 @@ the figures are rebuilt from those tables:
 
 ## Shared assets
 
-    _common/paperstyle.sty   page geometry, fonts, headings, captions, title block
+    _common/paperstyle.sty   acmart companion: extra packages, \ind, equal-contribution marks
     _common/figstyle.py      matplotlib styling; embeds TrueType, not Type 3

@@ -1,26 +1,71 @@
 %% Does a Bankruptcy Model Trained in Calm Times Survive a Recession?
 %% Single-column research manuscript.
-\documentclass[11pt]{article}
+\documentclass[manuscript,nonacm]{acmart}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 
+%% The template numbers its references, so override acmart's author-year default.
+\citestyle{acmnumeric}
+
 \begin{document}
 
-\papertitle{Does a Bankruptcy Model Trained in Calm Times Survive a\\
-Recession? A Temporal Stress Test on U.S. Public Firms}
+\title{Does a Bankruptcy Model Trained in Calm Times Survive a Recession?}
+\subtitle{A Temporal Stress Test on U.S. Public Firms}
 
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\paperauthors{Srikanth Samy\footnotemark[1]\affil{1}\ \ and
-Ishaan Gupta\footnotemark[2]\affil{2}}
-\footnotetext[1]{\texttt{ssamy@berkeley.edu}}
-\footnotetext[2]{\texttt{ishaangupta@stanford.edu}}
-\renewcommand{\thefootnote}{\arabic{footnote}}\setcounter{footnote}{0}
+\author{Ayush Bodalia}
+\equalcontrib
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
 
-\paperaffils{\affil{1}University of California, Berkeley\\
-\affil{2}Stanford University}
+\author{Arnav Deokule}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
 
-\begin{paperabstract}
+\author{Shravan Ginde}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Sahasra Namburu}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Kavindran Rajangam}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Sreehaas Voruganti}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Srikanth Samy}
+\affiliation{%
+  \institution{University of California, Berkeley}
+  \city{Berkeley}
+  \state{California}
+  \country{USA}}
+\email{ssamy@berkeley.edu}
+
+\author{Ishaan Gupta}
+\affiliation{%
+  \institution{Stanford University}
+  \city{Stanford}
+  \state{California}
+  \country{USA}}
+\email{ishaangupta@stanford.edu}
+
+\begin{abstract}
 Corporate-distress models are typically trained and validated on data pooled across
 time, yet they are deployed forward into economic conditions that may differ sharply
 from the training period. We ask whether a bankruptcy classifier trained on \emph{calm}
@@ -37,10 +82,16 @@ financial-distress signal is thus stable, even sharper, under crisis conditions:
 model survives the stress test. We also show that a naive per-year AUC curve suggests a
 spurious ``cliff'' at 2007 that is an evaluation artifact of training-set overlap,
 underscoring the importance of leakage-free temporal validation.
-\end{paperabstract}
+\end{abstract}
+
+\ccsdesc[500]{Applied computing~Economics}
+\ccsdesc[300]{Computing methodologies~Supervised learning by classification}
+\ccsdesc[300]{Computing methodologies~Machine learning}
 
 \keywords{bankruptcy prediction, distribution shift, temporal validation, financial
 ratios, class imbalance}
+
+\maketitle
 
 \section{Introduction}
 Models that flag firms at risk of failure are central to credit and investment
@@ -309,7 +360,32 @@ training partition. The source panel is licensed and is not redistributed here; 
 figure script accompanying this manuscript regenerates all figures and tables from the
 recorded results, and recomputes the per-year analysis when the raw CSV is supplied.
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
+
+\section*{Authors' background}
+
+\noindent\begin{minipage}{\linewidth}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.18\linewidth}p{0.22\linewidth}p{0.22\linewidth}@{}}
+\toprule
+Your Name & Title$^{*}$ & Research Field & Personal website \\
+\midrule
+Ayush Bodalia      & & & \\
+Arnav Deokule      & & & \\
+Shravan Ginde      & & & \\
+Sahasra Namburu    & & & \\
+Kavindran Rajangam & & & \\
+Sreehaas Voruganti & & & \\
+Srikanth Samy      & & & \\
+Ishaan Gupta       & & & \\
+\bottomrule
+\end{tabular}
+
+\vskip 6pt
+{\footnotesize $^{*}$This form helps us to understand your paper better,
+the form itself will not be published.\\
+$^{*}$Title can be chosen from: master student, Phd candidate, assistant professor,
+lecture, senior lecture, associate professor, full professor}
+\end{minipage}
 
 \end{document}

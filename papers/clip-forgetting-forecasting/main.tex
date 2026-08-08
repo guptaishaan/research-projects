@@ -1,29 +1,74 @@
 %% Early Forecasting of Catastrophic Forgetting in CLIP Fine-Tuning
 %% Single-column research manuscript, IEEE house style.
-\documentclass[11pt]{article}
+\documentclass[manuscript,nonacm]{acmart}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
 
+%% The template numbers its references, so override acmart's author-year default.
+\citestyle{acmnumeric}
+
 \begin{document}
 
-\papertitle{Early Forecasting of Catastrophic Forgetting in CLIP Fine-Tuning:\\
-How Much Does Watching Training Actually Tell You?}
+\title{Early Forecasting of Catastrophic Forgetting in CLIP Fine-Tuning}
+\subtitle{How Much Does Watching Training Actually Tell You?}
 
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\paperauthors{Srikanth Samy\footnotemark[1]\affil{1}\ \ and
-Ishaan Gupta\footnotemark[2]\affil{2}}
-\footnotetext[1]{\texttt{ssamy@berkeley.edu}}
-\footnotetext[2]{\texttt{ishaangupta@stanford.edu}}
-\renewcommand{\thefootnote}{\arabic{footnote}}\setcounter{footnote}{0}
+\author{Saanvi Eha Chandra}
+\equalcontrib
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
 
-\paperaffils{\affil{1}University of California, Berkeley\\
-\affil{2}Stanford University}
+\author{Avni Gautam}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Krisha Gupta}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Neel Ranadive}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Aarav Shah}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Noah Yoo}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Srikanth Samy}
+\affiliation{%
+  \institution{University of California, Berkeley}
+  \city{Berkeley}
+  \state{California}
+  \country{USA}}
+\email{ssamy@berkeley.edu}
+
+\author{Ishaan Gupta}
+\affiliation{%
+  \institution{Stanford University}
+  \city{Stanford}
+  \state{California}
+  \country{USA}}
+\email{ishaangupta@stanford.edu}
 
 
-\begin{paperabstract}
+\begin{abstract}
 Fine-tuning a vision--language model on a narrow dataset improves the target task while
 eroding the zero-shot competence that made the model valuable. We ask whether the
 \emph{final} magnitude of that erosion can be forecast from a short warm-up of the
@@ -43,10 +88,16 @@ naive curve continuation is therefore real but narrow, and it is confined to ver
 warm-ups ($K\le5$); beyond $K\approx6$ the two are indistinguishable. We conclude that
 most of the ``forecasting'' signal is trajectory persistence, and that future work in
 this area must report a persistence baseline to make a meaningful claim.
-\end{paperabstract}
+\end{abstract}
+
+\ccsdesc[500]{Computing methodologies~Machine learning}
+\ccsdesc[300]{Computing methodologies~Computer vision}
+\ccsdesc[300]{Computing methodologies~Transfer learning}
 
 \keywords{Catastrophic forgetting, CLIP, fine-tuning dynamics, grouped
 cross-validation, multimodal learning, transfer learning, zero-shot classification.}
+
+\maketitle
 
 \section{Introduction}
 Contrastively pretrained vision--language models such as
@@ -444,7 +495,32 @@ python trajectory_dynamics.py --epochs 20 --train-n 4000 \
        --eval-n 1500 --lrs 1e-6 5e-6 1e-5
 \end{verbatim}
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
+
+\section*{Authors' background}
+
+\noindent\begin{minipage}{\linewidth}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.18\linewidth}p{0.22\linewidth}p{0.22\linewidth}@{}}
+\toprule
+Your Name & Title$^{*}$ & Research Field & Personal website \\
+\midrule
+Saanvi Eha Chandra & & & \\
+Avni Gautam        & & & \\
+Krisha Gupta       & & & \\
+Neel Ranadive      & & & \\
+Aarav Shah         & & & \\
+Noah Yoo           & & & \\
+Srikanth Samy      & & & \\
+Ishaan Gupta       & & & \\
+\bottomrule
+\end{tabular}
+
+\vskip 6pt
+{\footnotesize $^{*}$This form helps us to understand your paper better,
+the form itself will not be published.\\
+$^{*}$Title can be chosen from: master student, Phd candidate, assistant professor,
+lecture, senior lecture, associate professor, full professor}
+\end{minipage}
 
 \end{document}

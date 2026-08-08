@@ -1,26 +1,78 @@
 %% Calibrating Perturbation Controls for EEG Decoder Audits
-%% Single-column research manuscript.
-\documentclass[11pt]{article}
+%% ICAISE 2026 single-column manuscript (ACM Primary Article Template).
+\documentclass[manuscript,nonacm]{acmart}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 
+%% The template numbers its references, so override acmart's author-year default.
+\citestyle{acmnumeric}
+
 \begin{document}
 
-\papertitle{The Control Is the Instrument: Calibrating Perturbation\\
-Tests Used to Prove That EEG Decoders Read the Brain}
+\title{The Control Is the Instrument}
+\subtitle{Calibrating Perturbation Tests Used to Prove That EEG Decoders Read
+the Brain}
 
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\paperauthors{Srikanth Samy\footnotemark[1]\affil{1}\ \ and
-Ishaan Gupta\footnotemark[2]\affil{2}}
-\footnotetext[1]{\texttt{ssamy@berkeley.edu}}
-\footnotetext[2]{\texttt{ishaangupta@stanford.edu}}
-\renewcommand{\thefootnote}{\arabic{footnote}}\setcounter{footnote}{0}
+\author{Isha Gupta}
+\equalcontrib
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
 
-\paperaffils{\affil{1}University of California, Berkeley\\
-\affil{2}Stanford University}
+\author{Ishaan Mohandas}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
 
-\begin{paperabstract}
+\author{Ashwath Raghu}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Jake Rajbhandari}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Anya Samuel}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Riva Sheth}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Mridhula Suresh}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Srikanth Samy}
+\affiliation{%
+  \institution{University of California, Berkeley}
+  \city{Berkeley}
+  \state{California}
+  \country{USA}}
+\email{ssamy@berkeley.edu}
+
+\author{Ishaan Gupta}
+\affiliation{%
+  \institution{Stanford University}
+  \city{Stanford}
+  \state{California}
+  \country{USA}}
+\email{ishaangupta@stanford.edu}
+
+\begin{abstract}
 A standard argument in brain--computer-interface research runs: we removed the $\mu$
 band, accuracy dropped, therefore the decoder uses sensorimotor rhythm. The argument is
 valid only if the perturbation has known sensitivity and, critically, a known
@@ -41,10 +93,16 @@ identical data. Finally, we grade the controls on real brains using eyes-open ve
 eyes-closed, a task whose occipital-alpha ground truth is fixed by physiology: band-power
 false-alarms on three of four controls whose targets are absent and CSP on two, exactly
 as the simulator predicted.
-\end{paperabstract}
+\end{abstract}
+
+\ccsdesc[500]{Applied computing~Life and medical sciences}
+\ccsdesc[300]{Computing methodologies~Machine learning}
+\ccsdesc[300]{Computing methodologies~Modeling and simulation}
 
 \keywords{brain--computer interfaces, EEG, explainability, perturbation tests,
 simulation, validation}
+
+\maketitle
 
 \section{Introduction}
 Decoders that read motor imagery from scalp EEG are routinely defended with perturbation
@@ -364,7 +422,33 @@ audit verdict, and eyes-open/closed drop to CSV. Simulation seeds are fixed, pla
 truth is defined before any control is evaluated, and catch and false-alarm regimes are
 reported separately for each decoder family.
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
+
+\section*{Authors' background}
+
+\noindent\begin{minipage}{\linewidth}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.18\linewidth}p{0.22\linewidth}p{0.22\linewidth}@{}}
+\toprule
+Your Name & Title$^{*}$ & Research Field & Personal website \\
+\midrule
+Isha Gupta          & & & \\
+Ishaan Mohandas     & & & \\
+Ashwath Raghu       & & & \\
+Jake Rajbhandari    & & & \\
+Anya Samuel         & & & \\
+Riva Sheth          & & & \\
+Mridhula Suresh     & & & \\
+Srikanth Samy       & & & \\
+Ishaan Gupta        & & & \\
+\bottomrule
+\end{tabular}
+
+\vskip 6pt
+{\footnotesize $^{*}$This form helps us to understand your paper better,
+the form itself will not be published.\\
+$^{*}$Title can be chosen from: master student, Phd candidate, assistant professor,
+lecture, senior lecture, associate professor, full professor}
+\end{minipage}
 
 \end{document}

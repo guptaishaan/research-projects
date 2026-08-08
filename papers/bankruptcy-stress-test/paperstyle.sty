@@ -1,126 +1,44 @@
-%% paperstyle.sty -- single-column research-paper layout.
+%% paperstyle.sty -- companion package for the ICAISE 2026 manuscript format.
 %%
-%% Matches the house format of `bankruptcy_stress_test_paper': centred bold title,
-%% author block with symbol-marked emails and numbered affiliations, a centred
-%% `Abstract' heading over an indented block, an `Index Terms' line, numbered bold
-%% section headings, `Figure N:' / `Table N:' captions, and a centred page number.
+%% The ICAISE 2026 submission template is the ACM Primary Article Template: a
+%% single-column manuscript with the title / per-author affiliation block, an
+%% unlabelled abstract, CCS concepts, a keyword line, numbered headings,
+%% `Table N:' captions above tables and `Figure N:' captions below figures, and
+%% ACM-Reference-Format bibliography entries.  All of that layout comes from
+%% `acmart' with the `manuscript' option, so this file only supplies the extra
+%% packages and macros the manuscript bodies use.
+%%
+%% Nothing here may re-load a package that acmart already loads *with options*
+%% (geometry, caption, natbib, hyperref, microtype, fontenc, newtx): that raises
+%% an option clash.  Option-free re-loads are idempotent and therefore safe.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{paperstyle}[2026/07/25 single-column research paper]
+\ProvidesPackage{paperstyle}[2026/08/08 ICAISE 2026 manuscript companion]
 
-% ---------------------------------------------------------------- page layout
-\RequirePackage[letterpaper,
-                top=1.15in, bottom=1.15in,
-                left=1.25in, right=1.25in,
-                footskip=0.5in]{geometry}
-
-% ---------------------------------------------------------------- typography
-\RequirePackage[T1]{fontenc}
-\RequirePackage[utf8]{inputenc}
-% amsmath must precede newtxmath; amssymb is omitted because newtxmath already
-% supplies the AMS symbol set and the two clash over \Bbbk.
-\RequirePackage{amsmath}
-\RequirePackage{newtxtext}
-\RequirePackage[varg]{newtxmath}
-\RequirePackage{bm}
-\RequirePackage[protrusion=true,expansion=true,final]{microtype}
-
-\linespread{1.12}
-\setlength{\parindent}{1.5em}
-\setlength{\emergencystretch}{2em}
-\sloppy
-\clubpenalty=9000
-\widowpenalty=9000
-\displaywidowpenalty=9000
-
-% ---------------------------------------------------------------- floats
+% ---------------------------------------------------------------- floats/tables
 \RequirePackage{graphicx}
 \RequirePackage{booktabs}
 \RequirePackage{multirow}
 \RequirePackage{array}
 \RequirePackage{float}
-\RequirePackage[font=small,labelfont=bf,labelsep=colon,
-                justification=justified,skip=7pt]{caption}
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{7pt}
-\setlength{\textfloatsep}{18pt plus 3pt minus 3pt}
-\setlength{\floatsep}{16pt plus 3pt minus 3pt}
-\setlength{\intextsep}{16pt plus 3pt minus 3pt}
-\renewcommand{\topfraction}{0.90}
-\renewcommand{\bottomfraction}{0.70}
-\renewcommand{\textfraction}{0.10}
-\renewcommand{\floatpagefraction}{0.80}
 
-% ---------------------------------------------------------------- headings
-\RequirePackage[explicit]{titlesec}
-\titleformat{\section}[block]
-  {\normalfont\Large\bfseries}{\thesection}{0.85em}{#1}
-\titleformat{\subsection}[block]
-  {\normalfont\large\bfseries}{\thesubsection}{0.75em}{#1}
-\titleformat{\subsubsection}[block]
-  {\normalfont\normalsize\bfseries}{\thesubsubsection}{0.7em}{#1}
-\titlespacing*{\section}{0pt}{20pt plus 4pt minus 3pt}{9pt}
-\titlespacing*{\subsection}{0pt}{14pt plus 3pt minus 2pt}{6pt}
-\titlespacing*{\subsubsection}{0pt}{11pt plus 2pt minus 2pt}{5pt}
-
-% ---------------------------------------------------------------- title block
-\newcommand{\affil}[1]{$^{#1}$}
-\newcommand{\papertitle}[1]{%
-  \vspace*{0.35in}%
-  \begin{center}\normalfont\LARGE\bfseries #1\end{center}\vspace{1.0em}}
-\newcommand{\paperauthors}[1]{%
-  \begin{center}\normalfont\large #1\end{center}\vspace{0.2em}}
-\newcommand{\paperaffils}[1]{%
-  \begin{center}\normalfont\normalsize #1\end{center}}
-
-% Author footnote marks use symbols (*, dagger, ...) so they never collide with the
-% numeric affiliation superscripts.  \authornotes emits the corresponding footnote
-% text and restores numeric footnotes for the body.
-\newcommand{\authormark}[1]{\textsuperscript{\normalfont\fnsymbol{#1}}}
-\newcommand{\anote}[1]{$^{*}$}
-\newenvironment{authornotes}
-  {\renewcommand{\thefootnote}{\fnsymbol{footnote}}\setcounter{footnote}{0}}
-  {\renewcommand{\thefootnote}{\arabic{footnote}}\setcounter{footnote}{0}}
-
-% ---------------------------------------------------------------- abstract
-\newenvironment{paperabstract}
-  {\vspace{2.2em}\begin{center}\normalfont\normalsize\bfseries Abstract\end{center}
-   \vspace{0.1em}%
-   \begin{list}{}{\setlength{\leftmargin}{0.055\textwidth}%
-                  \setlength{\rightmargin}{0.055\textwidth}%
-                  \setlength{\listparindent}{1.5em}}\item[]\small}
-  {\end{list}\vspace{1.0em}}
-
-\newcommand{\keywords}[1]{%
-  \noindent\textbf{Index Terms\,---\,}\textit{#1}\vspace{1.2em}}
-
-% ---------------------------------------------------------------- page style
-\RequirePackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\fancyfoot[C]{\normalsize\thepage}
-\renewcommand{\headrulewidth}{0pt}
-\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\normalsize\thepage}%
-  \renewcommand{\headrulewidth}{0pt}}
-
-% ---------------------------------------------------------------- bibliography
-\RequirePackage[numbers,sort&compress]{natbib}
-\setlength{\bibsep}{5pt plus 0.5ex}
-\renewcommand{\bibfont}{\normalsize}
-
-% ---------------------------------------------------------------- links
-\RequirePackage[hidelinks,breaklinks=true]{hyperref}
-\RequirePackage[capitalise,noabbrev]{cleveref}
-\RequirePackage{url}
-\urlstyle{same}
-
-% ---------------------------------------------------------------- lists
-\RequirePackage{enumitem}
-\setlist[itemize]{leftmargin=1.7em,itemsep=3pt,topsep=5pt,parsep=0pt}
-\setlist[enumerate]{leftmargin=2.0em,itemsep=3pt,topsep=5pt,parsep=0pt}
-
-% ---------------------------------------------------------------- symbols
+% ---------------------------------------------------------------- math
+\RequirePackage{bm}
 % indicator function; doublestroke ships a Type1 face, unlike bbm
 \RequirePackage{dsfont}
 \newcommand{\ind}{\mathds{1}}
+
+% ---------------------------------------------------------------- lists
+\RequirePackage{enumitem}
+
+% ---------------------------------------------------------------- cross-refs
+% cleveref must come after hyperref, which acmart has already loaded by now.
+\RequirePackage[capitalise,noabbrev]{cleveref}
+
+% ---------------------------------------------------------------- author block
+% Every student author carries the same equal-contribution mark.  The first
+% student uses \equalcontrib; the rest repeat the mark with \equalcontribmark.
+\newcommand{\equalcontrib}{%
+  \authornote{These authors contributed equally to this work.}}
+\newcommand{\equalcontribmark}{\authornotemark[1]}
 
 \endinput

@@ -1,28 +1,85 @@
 %% Cross-Hospital Generalization of Heart-Disease Classifiers
 %% Single-column research manuscript, IEEE house style.
-\documentclass[11pt]{article}
+\documentclass[manuscript,nonacm]{acmart}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 
 
+%% The template numbers its references, so override acmart's author-year default.
+\citestyle{acmnumeric}
+
 \begin{document}
 
-\papertitle{Cross-Hospital Generalization of Heart-Disease Classifiers:\\
-A Directed Transfer Analysis on Four UCI Cohorts}
+\title{Cross-Hospital Generalization of Heart-Disease Classifiers}
+\subtitle{A Directed Transfer Analysis on Four UCI Cohorts}
 
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\paperauthors{Srikanth Samy\footnotemark[1]\affil{1}\ \ and
-Ishaan Gupta\footnotemark[2]\affil{2}}
-\footnotetext[1]{\texttt{ssamy@berkeley.edu}}
-\footnotetext[2]{\texttt{ishaangupta@stanford.edu}}
-\renewcommand{\thefootnote}{\arabic{footnote}}\setcounter{footnote}{0}
+\author{Anoushka Aisola}
+\equalcontrib
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
 
-\paperaffils{\affil{1}University of California, Berkeley\\
-\affil{2}Stanford University}
+\author{Vihaan Bhoopathy}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Rayan Hossain}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Spoorthi Idumudi}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Nethra Kollipara}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Rania Malik}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Nishant Nayagam}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Yukti Srinivas}
+\equalcontribmark
+\affiliation{%
+  \institution{Nexus Labs}
+  \country{USA}}
+
+\author{Srikanth Samy}
+\affiliation{%
+  \institution{University of California, Berkeley}
+  \city{Berkeley}
+  \state{California}
+  \country{USA}}
+\email{ssamy@berkeley.edu}
+
+\author{Ishaan Gupta}
+\affiliation{%
+  \institution{Stanford University}
+  \city{Stanford}
+  \state{California}
+  \country{USA}}
+\email{ishaangupta@stanford.edu}
 
 
-\begin{paperabstract}
+\begin{abstract}
 A clinical risk model can appear excellent under internal validation and still fail
 when it is moved to a hospital with a different case mix, different measurement
 practice, and a different missing-data pattern. We quantify that failure mode on the
@@ -45,10 +102,16 @@ essentially flat but weaker in absolute terms. We argue that the scalar
 is an insufficient summary, that source-cohort quality dominates model choice, and
 that external validity should be reported as a transfer matrix accompanied by absolute
 target-site performance.
-\end{paperabstract}
+\end{abstract}
+
+\ccsdesc[500]{Applied computing~Health informatics}
+\ccsdesc[300]{Computing methodologies~Supervised learning by classification}
+\ccsdesc[300]{Computing methodologies~Cross-validation}
 
 \keywords{Clinical machine learning, dataset shift, external validation, heart
 disease, ROC analysis, reproducibility, transportability.}
+
+\maketitle
 
 \footnotetext[1]{The study uses the public UCI Heart Disease collection and is
 intended as methodological research on external validation. It is not a diagnostic
@@ -502,7 +565,34 @@ This work uses a de-identified public benchmark. It is a methodological study of
 external validation and is explicitly not a diagnostic device. No clinical decision
 should be derived from any model reported here.
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
+
+\section*{Authors' background}
+
+\noindent\begin{minipage}{\linewidth}
+\begin{tabular}{@{}p{0.24\linewidth}p{0.18\linewidth}p{0.22\linewidth}p{0.22\linewidth}@{}}
+\toprule
+Your Name & Title$^{*}$ & Research Field & Personal website \\
+\midrule
+Anoushka Aisola  & & & \\
+Vihaan Bhoopathy & & & \\
+Rayan Hossain    & & & \\
+Spoorthi Idumudi & & & \\
+Nethra Kollipara & & & \\
+Rania Malik      & & & \\
+Nishant Nayagam  & & & \\
+Yukti Srinivas   & & & \\
+Srikanth Samy    & & & \\
+Ishaan Gupta     & & & \\
+\bottomrule
+\end{tabular}
+
+\vskip 6pt
+{\footnotesize $^{*}$This form helps us to understand your paper better,
+the form itself will not be published.\\
+$^{*}$Title can be chosen from: master student, Phd candidate, assistant professor,
+lecture, senior lecture, associate professor, full professor}
+\end{minipage}
 
 \end{document}
