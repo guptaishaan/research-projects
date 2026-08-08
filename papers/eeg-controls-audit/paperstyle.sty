@@ -41,4 +41,74 @@
   \authornote{These authors contributed equally to this work.}}
 \newcommand{\equalcontribmark}{\authornotemark[1]}
 
+%% ------------------------------------------------------------------------
+%% Template-exact topmatter.
+%%
+%% acmart's journal topmatter and the Word template's topmatter differ in
+%% three visible ways.  The template is authoritative here, so we override
+%% acmart rather than the other way round.
+
+% (1) The template has no "Authors' addresses" footer -- the address of each
+%     author is already given under their name.  acmart emits one for journal
+%     formats; suppress it.
+\renewcommand\footnotetextauthorsaddresses[1]{}
+
+% (2) The template gives every author three stacked paragraphs, styled
+%     Authors / Affiliation / Affiliation:
+%
+%         FIRST AUTHOR'S NAME, INITIALS, AND LAST NAME*
+%         First author's affiliation, an Institution with a very long name
+%         E-mail address
+%
+%     acmart's \@mkauthors@i instead joins name and affiliation onto one
+%     comma-separated line and drops the e-mail entirely.  Rebuild the block
+%     by re-reading \addresses with our own \@author/\affiliation/\email.
+%     \authornote/\authornotemark append a \footnotemark to \@currentauthors,
+%     so the name is buffered there and flushed when the next element of the
+%     author block arrives -- that way the equal-contribution star still lands
+%     immediately after the name it belongs to.
+\def\@authorfont{\normalsize\sffamily}
+\def\@affiliationfont{\small\normalfont}
+\def\@flushauthor{%
+  \ifx\@currentauthors\@empty\else
+    \par\noindent{\@authorfont\@currentauthors}%
+  \fi
+  \gdef\@currentauthors{}}
+%     acmart's journal-mode \institution emits a hard-coded `~' before the
+%     name (it is built for the inline "NAME, Institution" layout) and throws
+%     \city and \state away, because in stock acmart those only ever reach the
+%     authors'-addresses footer that (1) removes.  Redefine the four elements
+%     to comma-join flush left.
+\def\@mkauthors{\begingroup
+  \hsize=\textwidth
+  \gdef\@currentauthors{}%
+  \def\institution##1{\global\@ACM@instpresenttrue\unskip##1\ignorespaces}%
+  \def\city##1{\global\@ACM@citypresenttrue\unskip, ##1\ignorespaces}%
+  \def\state##1{\unskip, ##1\ignorespaces}%
+  \def\country##1{\global\@ACM@countrypresenttrue\unskip, ##1\ignorespaces}%
+  \def\@author##1{\@flushauthor
+    \gdef\@currentauthors{\MakeTextUppercase{##1}}}%
+  \def\affiliation##1##2{\@flushauthor
+    \def\@tempa{##2}%
+    \ifx\@tempa\@empty\else
+      \par\noindent{\@affiliationfont
+        \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
+        \setkeys{@ACM@affiliation@}{##1}%
+        \@ACM@resetaffil\ignorespaces ##2\unskip\@ACM@checkaffil}%
+    \fi}%
+  \def\email##1##2{\@flushauthor
+    \par\noindent{\@affiliationfont\ignorespaces ##2\unskip}}%
+  \let\and\relax
+  \global\setbox\mktitle@bx=\vbox{%
+    \noindent\unvbox\mktitle@bx\par\medskip
+    \noindent\addresses\@flushauthor\par\medskip}%
+  \endgroup}
+
+% (3) The template's CCSDescription style is a single bold run of
+%     bullet-separated terms.  acmart instead bolds the general concept,
+%     italicises the specific one, and joins them with an arrow.  Flatten it.
+\renewcommand\ccsdesc[2][100]{\@ccsdesc@plain#2~\@nil}
+\def\@ccsdesc@plain#1~#2~\@nil{%
+  \g@addto@macro\@concepts{\textbullet\ \textbf{#1: #2}\space}}
+
 \endinput
