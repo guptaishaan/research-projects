@@ -111,4 +111,26 @@
 \def\@ccsdesc@plain#1~#2~\@nil{%
   \g@addto@macro\@concepts{\textbullet\ \textbf{#1: #2}\space}}
 
+% (4) The template carries no running head: "This submission version of your
+%     paper should not have headers or footers, these will be added when your
+%     manuscript is processed after acceptance."  Its only running element is
+%     the folio, and footer1.xml is a bare PAGE field.  acmart instead runs
+%     \@shortauthors and \shorttitle across the top of every page.  Strip the
+%     head and put the page number in the footer.
+%     acmart builds both page styles inside \AtBeginDocument, so redefining
+%     them at package-load time is overwritten at \begin{document}.  Ours has
+%     to be an \AtBeginDocument too: package hooks run after the class's.
+\AtBeginDocument{%
+  \fancypagestyle{standardpagestyle}{%
+    \fancyhf{}%
+    \renewcommand{\headrulewidth}{\z@}%
+    \renewcommand{\footrulewidth}{\z@}%
+    \fancyfoot[C]{\if@ACM@printfolios\small\thepage\fi}}%
+  \fancypagestyle{firstpagestyle}{%
+    \fancyhf{}%
+    \renewcommand{\headrulewidth}{\z@}%
+    \renewcommand{\footrulewidth}{\z@}%
+    \fancyfoot[C]{\if@ACM@printfolios\small\thepage\fi}}%
+  \pagestyle{standardpagestyle}}
+
 \endinput
