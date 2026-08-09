@@ -1,90 +1,44 @@
 %% Calibrating Perturbation Controls for EEG Decoder Audits
-%% ICAISE 2026 single-column manuscript (ACM Primary Article Template).
-\documentclass[manuscript,nonacm]{acmart}
+%% ACDSA 2027 two-column manuscript (IEEE conference template).
+\documentclass[10pt,conference]{IEEEtran}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 
-%% The template numbers its references, so override acmart's author-year default.
-\citestyle{acmnumeric}
-
 \begin{document}
 
-\title{The Control Is the Instrument}
-\subtitle{Calibrating Perturbation Tests Used to Prove That EEG Decoders Read
-the Brain}
+\title{Calibrating Perturbation Tests Used to Prove That EEG Decoders Read the Brain}
 
-\author{Isha Gupta}
-\equalcontrib
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
+\author{
+\IEEEauthorblockN{Isha Gupta\equalcontrib}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA}
+\and
+\IEEEauthorblockN{Ishaan Mohandas\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ ami4ya@gmail.com}
+\and
+\IEEEauthorblockN{Ashwath Raghu\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ ashwath.g.raghu@gmail.com}
+\and
+\IEEEauthorblockN{Jake Rajbhandari\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ JakeRajbhandari@gmail.com}
+\and
+\IEEEauthorblockN{Anya Samuel\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ lindseyafinch@gmail.com}
+\and
+\IEEEauthorblockN{Riva Sheth\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ sheth.riva25@gmail.com}
+\and
+\IEEEauthorblockN{Mridhula Suresh\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ mrisur2010@gmail.com}
+\and
+\IEEEauthorblockN{Srikanth Samy}
+\IEEEauthorblockA{University of California, Berkeley\\ Berkeley, USA\\ ssamy@berkeley.edu}
+\and
+\IEEEauthorblockN{Ishaan Gupta}
+\IEEEauthorblockA{Stanford University\\ Stanford, USA\\ ishaangupta@stanford.edu}
+}
 
-\author{Ishaan Mohandas}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Ashwath Raghu}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Jake Rajbhandari}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Anya Samuel}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Riva Sheth}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Mridhula Suresh}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Srikanth Samy}
-\affiliation{%
-  \institution{University of California, Berkeley}
-  \city{Berkeley}
-  \state{California}
-  \country{USA}}
-\email{ssamy@berkeley.edu}
-
-\author{Ishaan Gupta}
-\affiliation{%
-  \institution{Stanford University}
-  \city{Stanford}
-  \state{California}
-  \country{USA}}
-\email{ishaangupta@stanford.edu}
+\maketitle
 
 \begin{abstract}
 A standard argument in brain--computer-interface research runs: we removed the $\mu$
@@ -109,14 +63,8 @@ false-alarms on three of four controls whose targets are absent and CSP on two, 
 as the simulator predicted.
 \end{abstract}
 
-\ccsdesc[500]{Applied computing~Life and medical sciences}
-\ccsdesc[300]{Computing methodologies~Machine learning}
-\ccsdesc[300]{Computing methodologies~Modeling and simulation}
-
-\keywords{brain--computer interfaces, EEG, explainability, perturbation tests,
+\paperkeywords{brain--computer interfaces, EEG, explainability, perturbation tests,
 simulation, validation}
-
-\maketitle
 
 \section{Introduction}
 Decoders that read motor imagery from scalp EEG are routinely defended with perturbation
@@ -192,15 +140,15 @@ exploit~\cite{pfurtscheller1999erd}.
 and the resulting ground-truth topography, which sits on the motor channels and nowhere
 else.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig1_simulator.pdf}
+\includegraphics[width=\textwidth]{fig1_simulator.pdf}
 \caption{The simulator. (a) The $19$-electrode montage with region labels. (b) Welch
 spectra at C3 with and without the planted signal; the $\mu$-band bump is present only
 when $s>0$. (c) The planted ground truth: the class contrast in $\mu$ power is confined
 to motor channels by construction.}
 \label{fig:sim}
-\end{figure}
+\end{figure*}
 
 \subsection{Ground truth is operational, not biological}
 We are explicit that \cref{eq:signal} is not a cortex. Its value is
@@ -247,15 +195,15 @@ logistic model on $38$ features ($\mu$ and $\beta$ power at all $19$ channels); 
 the planted signal (remove $\mu$, remove motor) and two target nothing (remove $\beta$,
 remove occipital). Results over $15$ datasets appear in \cref{fig:toy}.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig2_toy_fire_rates.pdf}
+\includegraphics[width=\textwidth]{fig2_toy_fire_rates.pdf}
 \caption{Measured fire rates over $15$ simulated datasets. (a) All three decoders detect
 the genuinely planted dependence. (b) The linear \textsc{Broad} decoder false-alarms on
 $87\%$ of $\beta$ removals and $100\%$ of occipital removals, where no signal exists.
 \textsc{Tree} sees the identical $38$ features and never false-alarms.}
 \label{fig:toy}
-\end{figure}
+\end{figure*}
 
 All three decoders pass the sensitivity test: removing $\mu$ or silencing motor channels
 degrades every one of them, as it should. The false-alarm panel dissociates them
@@ -279,15 +227,15 @@ logistic regression, CSP with LDA~\cite{ramoser2000csp}, a random forest, and
 EEGNet~\cite{lawhern2018eegnet}. A control is graded on a decoder only if that decoder
 cleared a decodability floor on the planted signal. \cref{fig:oc} reports the result.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig3_operating_characteristics.pdf}
+\includegraphics[width=\textwidth]{fig3_operating_characteristics.pdf}
 \caption{Measured operating characteristics on the simulator grid. (a) Sensitivity is
 high everywhere: all four decoder families detect genuine dependence. (b) False-alarm
 rates differ by more than an order of magnitude. Band-power fires on $67$--$83\%$ of
 perturbations whose targets are absent; EEGNet essentially never does.}
 \label{fig:oc}
-\end{figure}
+\end{figure*}
 
 Sensitivity is uninformative---every cell is $83$--$100\%$, so every control detects
 real dependence. The discrimination is entirely in the false-alarm panel. Averaged over
@@ -313,16 +261,16 @@ real decoders clear the decodability floor (\cref{fig:audit}(b)); the BCI Compet
 IV-2a set~\cite{tangermann2012bci} is excluded from the audit because nine participants
 render its test underpowered, which is a limitation rather than a result.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig4_calibrated_audit.pdf}
+\includegraphics[width=\textwidth]{fig4_calibrated_audit.pdf}
 \caption{(a) Calibrated verdicts on real PhysioNet decoders. Each cell attaches the
 measured reliability of \cref{fig:oc} to the observed accuracy drop, converting ``the
 control fired'' into a trust-weighted statement. Band-power and the tree earn no
 trustworthy verdict on any control; EEGNet earns four. (b) Held-out balanced accuracy:
 all decoders read motor imagery above chance.}
 \label{fig:audit}
-\end{figure}
+\end{figure*}
 
 The verdicts are the paper's practical payoff. Every one of the four controls fires on
 band-power with drops of $0.03$--$0.08$, and \emph{none} of those firings is informative,
@@ -355,15 +303,15 @@ We decoded eyes-open versus eyes-closed on $34$ subjects (band-power $73\%$, CSP
 balanced accuracy---a real, strong signal) and graded the controls against that known
 truth. \cref{fig:eoec} shows the outcome.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.72\linewidth]{fig5_real_brain_validation.pdf}
+\includegraphics[width=0.72\textwidth]{fig5_real_brain_validation.pdf}
 \caption{Real-brain validation on eyes-open versus eyes-closed, $34$ PhysioNet subjects,
 where physiology fixes the truth to occipital alpha. Triangles mark controls that should
 fire, dots those that should stay silent; cells give the accuracy drop. Band-power
 false-alarms on three of four absent targets, CSP on both spatial ones.}
 \label{fig:eoec}
-\end{figure}
+\end{figure*}
 
 Band-power caught the genuine occipital-alpha dependence---and also fired on $\theta$
 removal ($+0.19$), sensorimotor removal ($+0.21$), and frontal removal ($+0.23$),
@@ -436,7 +384,7 @@ audit verdict, and eyes-open/closed drop to CSV. Simulation seeds are fixed, pla
 truth is defined before any control is evaluated, and catch and false-alarm regimes are
 reported separately for each decoder family.
 
-\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}

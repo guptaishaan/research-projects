@@ -1,84 +1,42 @@
 %% Early Forecasting of Catastrophic Forgetting in CLIP Fine-Tuning
-%% Single-column research manuscript, IEEE house style.
-\documentclass[manuscript,nonacm]{acmart}
+%% ACDSA 2027 two-column manuscript (IEEE conference template).
+\documentclass[10pt,conference]{IEEEtran}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
-
-%% The template numbers its references, so override acmart's author-year default.
-\citestyle{acmnumeric}
-
 \begin{document}
 
 \title{Early Forecasting of Catastrophic Forgetting in CLIP Fine-Tuning}
-\subtitle{How Much Does Watching Training Actually Tell You?}
 
-\author{Saanvi Eha Chandra}
-\equalcontrib
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
+\author{
+\IEEEauthorblockN{Saanvi Eha Chandra\equalcontrib}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ Saanvi.eha.chandra@gmail.com}
+\and
+\IEEEauthorblockN{Avni Gautam\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ gautamsumit@gmail.com}
+\and
+\IEEEauthorblockN{Krisha Gupta\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ krishag1016@gmail.com}
+\and
+\IEEEauthorblockN{Neel Ranadive\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ ranadiveneel@gmail.com}
+\and
+\IEEEauthorblockN{Aarav Shah\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ arvjcs@gmail.com}
+\and
+\IEEEauthorblockN{Noah Yoo\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ nynoahyoo@gmail.com}
+\and
+\IEEEauthorblockN{Srikanth Samy}
+\IEEEauthorblockA{University of California, Berkeley\\ Berkeley, USA\\ ssamy@berkeley.edu}
+\and
+\IEEEauthorblockN{Ishaan Gupta}
+\IEEEauthorblockA{Stanford University\\ Stanford, USA\\ ishaangupta@stanford.edu}
+}
 
-\author{Avni Gautam}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Krisha Gupta}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Neel Ranadive}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Aarav Shah}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Noah Yoo}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Srikanth Samy}
-\affiliation{%
-  \institution{University of California, Berkeley}
-  \city{Berkeley}
-  \state{California}
-  \country{USA}}
-\email{ssamy@berkeley.edu}
-
-\author{Ishaan Gupta}
-\affiliation{%
-  \institution{Stanford University}
-  \city{Stanford}
-  \state{California}
-  \country{USA}}
-\email{ishaangupta@stanford.edu}
-
+\maketitle
 
 \begin{abstract}
 Fine-tuning a vision--language model on a narrow dataset improves the target task while
@@ -102,14 +60,8 @@ most of the ``forecasting'' signal is trajectory persistence, and that future wo
 this area must report a persistence baseline to make a meaningful claim.
 \end{abstract}
 
-\ccsdesc[500]{Computing methodologies~Machine learning}
-\ccsdesc[300]{Computing methodologies~Computer vision}
-\ccsdesc[300]{Computing methodologies~Transfer learning}
-
-\keywords{Catastrophic forgetting, CLIP, fine-tuning dynamics, grouped
+\paperkeywords{Catastrophic forgetting, CLIP, fine-tuning dynamics, grouped
 cross-validation, multimodal learning, transfer learning, zero-shot classification.}
-
-\maketitle
 
 \section{Introduction}
 Contrastively pretrained vision--language models such as
@@ -235,14 +187,14 @@ $0.35$, i.e.\ more than a third of the pretrained general accuracy is destroyed.
 Second, curves are monotone and saturating for essentially every run, which is precisely
 the property that later makes naive persistence a strong forecaster.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig1_forgetting_curves.pdf}
+\includegraphics[width=\textwidth]{fig1_forgetting_curves.pdf}
 \caption{Forgetting $\Phi_t$ during fine-tuning for all $16$ datasets at the three
 learning rates. Colour encodes dataset family. Curves are near-monotone and saturating,
 which is the structural reason a persistence forecaster performs well.}
 \label{fig:curves}
-\end{figure}
+\end{figure*}
 
 \subsection{Which datasets forget most}
 \cref{fig:final} ranks final forgetting at the largest learning rate and summarises it
@@ -252,7 +204,7 @@ expectation that visually distant data causes more damage, but the medical famil
 almost the entire observed range ($0.147$ to $0.382$), so ``distance from web photos''
 is not by itself a sufficient predictor.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Final forgetting $\Phi_{20}$ at $\eta=10^{-5}$, grouped by dataset family.}
 \label{tab:family}
@@ -265,16 +217,16 @@ medical & 8 & 0.283 & 0.147 & 0.382\\
 natural & 5 & 0.201 & 0.089 & 0.318\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig2_final_forgetting.pdf}
+\includegraphics[width=\textwidth]{fig2_final_forgetting.pdf}
 \caption{(a) Final forgetting per dataset at $\eta=10^{-5}$, coloured by family.
 (b) Distribution by family. The medical family is highly dispersed, so family membership
 alone is a weak predictor.}
 \label{fig:final}
-\end{figure}
+\end{figure*}
 
 \section{Forecasting Setup}
 
@@ -301,15 +253,15 @@ curve,
 with the outcome ($|r|\le0.44$, $n=16$), motivating multivariate models; panel (b)
 shows the co-evolution of the logged signals within a single run.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig3_features.pdf}
+\includegraphics[width=\textwidth]{fig3_features.pdf}
 \caption{(a) Pearson correlation of each static descriptor with final forgetting across
 the $16$ datasets. All are modest and estimated from $16$ points. (b) The four tracked
 signals for SVHN at $\eta=10^{-5}$, min--max rescaled; the shaded region is the
 $K=5$ warm-up.}
 \label{fig:features}
-\end{figure}
+\end{figure*}
 
 \subsection{Grouped evaluation}
 The three learning-rate runs of one dataset share $\mathbf{s}_d$ exactly and are
@@ -354,7 +306,7 @@ a $2.8\times$ error reduction. \cref{fig:quality}(b) shows the predicted-versus-
 scatter for the best model: held-out datasets from all three families lie close to the
 identity line, with no systematic family bias.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Leave-one-dataset-out forecasting of final forgetting $\Phi_{20}$, $K=5$.
 Rows above the rule are fitted models; rows below are model-free controls that consume
@@ -382,18 +334,18 @@ Inputs & Estimator & MAE & Spearman $\rho$ & $R^2$\\
  & Slope extrap., Eq.~\eqref{eq:extrap}       & 0.133 & 0.634 & $-2.281$\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig4_forecast_quality.pdf}
+\includegraphics[width=\textwidth]{fig4_forecast_quality.pdf}
 \caption{(a) Leave-one-dataset-out $R^2$ with and without the warm-up block; the dashed
 red line is the persistence control of Eq.~\eqref{eq:persist}, which no static-only model
 approaches and which the warm-up models beat by only $\approx0.07$.
 (b) Predicted versus actual final forgetting for gradient boosting; each point is one
 held-out run.}
 \label{fig:quality}
-\end{figure}
+\end{figure*}
 
 \subsection{The persistence control changes the interpretation}
 Read without a control, \cref{tab:main} tells a strong story: watching five of twenty
@@ -420,15 +372,15 @@ hand-crafted rule can be far worse than either the naive rule or the learned one
 \cref{fig:warmup} sweeps the warm-up length $K$ and re-runs the entire evaluation at
 each value, including both controls. Three regimes are visible.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.72\linewidth]{fig5_warmup_length.pdf}
+\includegraphics[width=0.72\textwidth]{fig5_warmup_length.pdf}
 \caption{Forecast quality against warm-up length $K$. The learned forecaster's advantage
 over persistence is confined to $K\le5$; from $K\approx6$ onward the two curves are
 interchangeable. Slope extrapolation is catastrophic for small $K$ and only becomes
 competitive once there is almost nothing left to forecast.}
 \label{fig:warmup}
-\end{figure}
+\end{figure*}
 
 For $K\le5$ the learned model leads clearly: at $K=4$ it attains $R^2=0.848$ against
 persistence's $0.795$, and at $K=5$, $0.917$ against $0.848$. This is the operationally
@@ -507,7 +459,7 @@ python trajectory_dynamics.py --epochs 20 --train-n 4000 \
        --eval-n 1500 --lrs 1e-6 5e-6 1e-5
 \end{verbatim}
 
-\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}

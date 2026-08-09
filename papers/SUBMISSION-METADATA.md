@@ -1,11 +1,12 @@
-# ICAISE 2026 submission metadata
+# ACDSA 2027 submission metadata
 
 Title, abstract and keywords for each paper, taken verbatim from the manuscript sources.
 
-Student authors are listed alphabetically by surname, affiliated to Nexus Labs, and marked
-with an asterisk for equal contribution; Srikanth Samy and Ishaan Gupta close each list.
+IEEE Xplore does not capture subtitles, so each paper now carries a single title; `bankruptcy-stress-test`'s was rephrased from a question into a declarative statement rather than dropped outright, since neither half alone named the paper's actual subject.
 
-## Early Forecasting of Catastrophic Forgetting in CLIP Fine-Tuning: How Much Does Watching Training Actually Tell You?
+Full author roster (name + institution + e-mail) is unchanged from the ICAISE 2026 submission and is not repeated here.
+
+## Early Forecasting of Catastrophic Forgetting in CLIP Fine-Tuning
 
 - **Directory:** `papers/clip-forgetting-forecasting/`
 - **Cluster:** Computer Vision (`2wvxlhkw`)
@@ -15,7 +16,7 @@ with an asterisk for equal contribution; Srikanth Samy and Ishaan Gupta close ea
 
 Fine-tuning a vision–language model on a narrow dataset improves the target task while eroding the zero-shot competence that made the model valuable. We ask whether the final magnitude of that erosion can be forecast from a short warm-up of the fine-tuning run. Our experiment comprises 48 fine-tuning runs of CLIP ViT-B/32 (16 specialised datasets × 3 learning rates × 20 epochs), logging five trajectory signals after every epoch and measuring forgetting as the mean drop in zero-shot accuracy over CIFAR-100, CIFAR-10, and STL-10. Forecasters are evaluated by leave-one-dataset-out cross-validation, so that all three learning-rate runs of a held-out dataset are unseen. Four cheap pre-training descriptors alone reach R²=0.43; adding a five-epoch warm-up raises this to R²=0.92 and cuts mean absolute error from 0.070 to 0.025. Simple tabular regressors beat both an MLP (R²=-0.66) and an LSTM (R²=0.81) in this 48-row, 16-group regime. Critically, we add the persistence control that the underlying study identified as missing: predicting final forgetting to equal forgetting at the end of the warm-up already attains R²=0.85 and Spearman ρ=0.945. The learned forecaster's advantage over naive curve continuation is therefore real but narrow, and it is confined to very short warm-ups (K≤5); beyond K≈6 the two are indistinguishable. We conclude that most of the “forecasting” signal is trajectory persistence, and that future work in this area must report a persistence baseline to make a meaningful claim.
 
-## The Control Is the Instrument: Calibrating Perturbation Tests Used to Prove That EEG Decoders Read the Brain
+## Calibrating Perturbation Tests Used to Prove That EEG Decoders Read the Brain
 
 - **Directory:** `papers/eeg-controls-audit/`
 - **Cluster:** Biotechnology-A (`ocagun6c`)
@@ -35,7 +36,7 @@ A standard argument in brain–computer-interface research runs: we removed the 
 
 A clinical risk model can appear excellent under internal validation and still fail when it is moved to a hospital with a different case mix, different measurement practice, and a different missing-data pattern. We quantify that failure mode on the four cohorts of the UCI Heart Disease collection (Cleveland, Hungary, Switzerland, Long Beach VA; n=920 patients). Three model families—L2-penalized logistic regression, a random forest, and a compact multilayer perceptron—are first evaluated on Cleveland with stratified five-fold cross-validation using all thirteen recorded variables, and are then transported across all twelve directed source→target hospital pairs using only the nine variables with genuine coverage at every site. Imputation and scaling are refitted strictly inside each training boundary, and the Swiss cholesterol field—recorded as zero for every Swiss patient—is excluded from the portable feature set rather than silently imputed from other hospitals. Internal Cleveland discrimination reaches AUC=0.910 for the random forest. Under transport, however, the picture is not a uniform degradation but a heterogeneous matrix: individual directed pairs range from AUC=0.571 to 0.888, and the random forest attains a higher macro-average external AUC (0.781) than internal AUC (0.756), while logistic regression loses 0.028 AUC and the MLP is essentially flat but weaker in absolute terms. We argue that the scalar “generalization gap” routinely reported in the clinical machine-learning literature is an insufficient summary, that source-cohort quality dominates model choice, and that external validity should be reported as a transfer matrix accompanied by absolute target-site performance.
 
-## Does a Bankruptcy Model Trained in Calm Times Survive a Recession? A Temporal Stress Test on U.S. Public Firms
+## A Temporal Stress Test of Bankruptcy Prediction Models on U.S. Public Firms
 
 - **Directory:** `papers/bankruptcy-stress-test/`
 - **Cluster:** Financial Technology (`bihc5gy3`)
@@ -55,7 +56,7 @@ Corporate-distress models are typically trained and validated on data pooled acr
 
 Transit photometry poses two distinct machine-learning problems: deciding whether a light curve contains a planetary transit, and measuring the planet's radius ratio Rp/R* from it. We compare seven model families on both tasks using simulated light curves with exactly known parameters, and score every model on a second axis besides accuracy—the fidelity with which a purely additive surrogate reproduces its output, an explicit and reproducible operationalisation of one dimension of interpretability. The two axes trade off: on detection, the most accurate model (an MLP, AUC=0.975) has the second-lowest additive fidelity (A=0.573), while the fully readable linear model reaches AUC=0.946 at A=0.999—a 0.029 AUC premium for near-total transparency. We then introduce a physics-informed Kolmogorov–Arnold network that predicts transit parameters and is trained only to reconstruct the observed flux through a differentiable Mandel–Agol forward model, never seeing a radius label. It attains MAE=0.0100 in Rp/R*, within 24% of the best fully supervised model, and occupies a distinct region of the Pareto plane. Applied zero-shot to twelve confirmed Kepler planets it recovers radii with full-sample MAE=0.023. We report that full-sample figure as the primary real-data result and show that the label-free reconstruction-residual screen used to identify model mismatch improves it only to 0.018—and rejects one fold whose radius was in fact recovered to within 0.001, demonstrating that reconstruction quality is not a reliable proxy for parameter accuracy.
 
-## When the Target Is Wrong: Reframing Plant Radiation Dosimetry as Cross-Study Exposure Triage
+## Reframing Plant Radiation Dosimetry as Cross-Study Exposure Triage
 
 - **Directory:** `papers/raddose-triage/`
 - **Cluster:** Experienced Track (`aiw35wob`)

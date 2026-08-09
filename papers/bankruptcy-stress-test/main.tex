@@ -1,89 +1,44 @@
 %% Does a Bankruptcy Model Trained in Calm Times Survive a Recession?
-%% Single-column research manuscript.
-\documentclass[manuscript,nonacm]{acmart}
+%% ACDSA 2027 two-column manuscript (IEEE conference template).
+\documentclass[10pt,conference]{IEEEtran}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 
-%% The template numbers its references, so override acmart's author-year default.
-\citestyle{acmnumeric}
-
 \begin{document}
 
-\title{Does a Bankruptcy Model Trained in Calm Times Survive a Recession?}
-\subtitle{A Temporal Stress Test on U.S. Public Firms}
+\title{A Temporal Stress Test of Bankruptcy Prediction Models on U.S. Public Firms}
 
-\author{Ayush Bodalia}
-\equalcontrib
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
+\author{
+\IEEEauthorblockN{Ayush Bodalia\equalcontrib}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA}
+\and
+\IEEEauthorblockN{Vishruth Burra\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ Vishruth.burra@gmail.com}
+\and
+\IEEEauthorblockN{Arnav Deokule\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ arnavdeokule@gmail.com}
+\and
+\IEEEauthorblockN{Shravan Ginde\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ shravanginde1224@gmail.com}
+\and
+\IEEEauthorblockN{Sahasra Namburu\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ sahasran0502@gmail.com}
+\and
+\IEEEauthorblockN{Kavindran Rajangam\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ kavinrajangam11@gmail.com}
+\and
+\IEEEauthorblockN{Sreehaas Voruganti\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ sreehaasvoruganti@gmail.com}
+\and
+\IEEEauthorblockN{Srikanth Samy}
+\IEEEauthorblockA{University of California, Berkeley\\ Berkeley, USA\\ ssamy@berkeley.edu}
+\and
+\IEEEauthorblockN{Ishaan Gupta}
+\IEEEauthorblockA{Stanford University\\ Stanford, USA\\ ishaangupta@stanford.edu}
+}
 
-\author{Vishruth Burra}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Arnav Deokule}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Shravan Ginde}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Sahasra Namburu}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Kavindran Rajangam}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Sreehaas Voruganti}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Srikanth Samy}
-\affiliation{%
-  \institution{University of California, Berkeley}
-  \city{Berkeley}
-  \state{California}
-  \country{USA}}
-\email{ssamy@berkeley.edu}
-
-\author{Ishaan Gupta}
-\affiliation{%
-  \institution{Stanford University}
-  \city{Stanford}
-  \state{California}
-  \country{USA}}
-\email{ishaangupta@stanford.edu}
+\maketitle
 
 \begin{abstract}
 Corporate-distress models are typically trained and validated on data pooled across
@@ -104,14 +59,8 @@ spurious ``cliff'' at 2007 that is an evaluation artifact of training-set overla
 underscoring the importance of leakage-free temporal validation.
 \end{abstract}
 
-\ccsdesc[500]{Applied computing~Economics}
-\ccsdesc[300]{Computing methodologies~Supervised learning by classification}
-\ccsdesc[300]{Computing methodologies~Machine learning}
-
-\keywords{bankruptcy prediction, distribution shift, temporal validation, financial
+\paperkeywords{bankruptcy prediction, distribution shift, temporal validation, financial
 ratios, class imbalance}
-
-\maketitle
 
 \section{Introduction}
 Models that flag firms at risk of failure are central to credit and investment
@@ -160,14 +109,14 @@ plain accuracy is uninformative and we evaluate with ranking and precision--reca
 metrics (\cref{fig:balance}). Distressed firms differ systematically from healthy
 ones---lower profitability and higher leverage---which is the signal our models exploit.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig1_class_balance.pdf}
+\includegraphics[width=\textwidth]{fig1_class_balance.pdf}
 \caption{(a) Raw status labels: $6.6\%$ of company-years belong to firms that eventually
 failed. (b) The imminent-failure target is far rarer still. Dropping the non-final years
 of failed firms leaves $74{,}071$ rows, of which only $609$ ($0.82\%$) are positive.}
 \label{fig:balance}
-\end{figure}
+\end{figure*}
 
 \subsection{Target definition}
 A failed firm appears in the panel for several years, every one of them stamped
@@ -207,12 +156,12 @@ per leaf; the MLP applies two ReLU hidden layers ($64$ and $32$ units) with drop
 $0.3$ and a sigmoid output, trained with Adam~\cite{kingma2015adam} and early stopping.
 Given the extreme imbalance, all models use class weighting; the MLP minimizes a
 weighted binary cross-entropy
-\begin{equation}
+\begin{multline}
 \mathcal{L}=-\frac{1}{N}\sum_{i=1}^{N}
-  \left[\beta_1 y_i\log\hat{y}_i+\beta_0(1-y_i)\log(1-\hat{y}_i)\right],
+  \left[\beta_1 y_i\log\hat{y}_i+\beta_0(1-y_i)\log(1-\hat{y}_i)\right],\\
 \qquad \beta_c=\frac{N}{2N_c}.
 \label{eq:loss}
-\end{equation}
+\end{multline}
 We report ROC-AUC, the probability that a failing firm is ranked above a surviving
 one~\cite{fawcett2006},
 \begin{equation}
@@ -231,15 +180,15 @@ would let the model recognise a company rather than learn a warning sign. The re
 window (2008--2009) is held out entirely for the stress test, and 2007 is excluded as a
 transition year. \cref{fig:splits} summarises the resulting partitions.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig2_splits.pdf}
+\includegraphics[width=\textwidth]{fig2_splits.pdf}
 \caption{(a) The three evaluation partitions, with sizes and positive rates. The
 recession window carries roughly twice the imminent-failure rate of the calm training
 data ($1.13\%$ versus $0.57\%$). (b) The share of company-years labelled
 \texttt{failed} drifts substantially over the panel.}
 \label{fig:splits}
-\end{figure}
+\end{figure*}
 
 We define the calm-to-recession \emph{change} as
 \begin{equation}
@@ -260,7 +209,7 @@ ensemble captures and the linear and shallow models do not. PR-AUC is low throug
 honest consequence of the $\sim\!0.6\%$ base rate; even so, the random forest's $0.020$
 is roughly $3\times$ the no-skill baseline.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Held-out calm-era (1999--2006) performance, company-grouped split. The PR-AUC
 no-skill baseline is the positive rate, $0.0065$.}
@@ -274,7 +223,7 @@ Random Forest       & \textbf{0.755} & \textbf{0.020}\\
 MLP                 & 0.625 & 0.012\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{The 2008--2009 stress test}
 \cref{tab:stress} and \cref{fig:stress} report the frozen calm-era models applied to the
@@ -284,7 +233,7 @@ $-0.050$). Firms about to fail during the crisis are, if anything, \emph{easier}
 identify from their financial ratios than in calm times---distress is a stable, even
 sharpened, signal. By ranking, the model survives the stress test.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Calm-era versus 2008--2009 recession, both on firms excluded from training.
 $\Delta$ is defined in Eq.~\eqref{eq:change}.}
@@ -298,16 +247,16 @@ Random Forest       & 0.755 & \textbf{0.798} & $\bm{+0.042}$\\
 MLP                 & 0.625 & 0.575 & $-0.050$\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig3_stress_test.pdf}
+\includegraphics[width=\textwidth]{fig3_stress_test.pdf}
 \caption{(a) Calm versus recession ROC-AUC per model. Taller red than blue means the
 model holds up. (b) The signed change of Eq.~\eqref{eq:change}: only the random forest
 is positive, and it is the only model that was strong to begin with.}
 \label{fig:stress}
-\end{figure}
+\end{figure*}
 
 Two points qualify the headline. First, the recession's higher base rate ($1.13\%$
 versus $0.57\%$) raises the attainable precision independently of model quality, so part
@@ -338,14 +287,14 @@ valid estimates side by side: held-out calm firms at $0.755$ and held-out recess
 firms at $0.798$. The correct reading of the same underlying model is that performance
 rose across the regime change.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.72\linewidth]{fig4_leakage_artifact.pdf}
+\includegraphics[width=0.72\textwidth]{fig4_leakage_artifact.pdf}
 \caption{Only estimates computed on firms excluded from training are comparable. A
 per-year curve scored on calm years is contaminated by training-firm overlap (left,
 hatched) and cannot be placed on the same axis as the two valid estimates.}
 \label{fig:artifact}
-\end{figure}
+\end{figure*}
 
 The practical rule follows directly: in panel data, temporal validation must exclude a
 firm's \emph{entire} history from the test period, not merely the test year.
@@ -382,11 +331,11 @@ made in the sections above; it is collected here because the distinction between
 ranking that survives a regime change and an operating point that does not is exactly
 the distinction a deployment reader needs.
 
-\begin{table}[H]
+\begin{table*}[!t]
 \centering
 \caption{Model card~\cite{mitchell2019modelcards} for the calm-era random forest.}
 \label{tab:card}
-\begin{tabular}{@{}p{0.26\linewidth}p{0.68\linewidth}@{}}
+\begin{tabular}{@{}p{0.26\textwidth}p{0.68\textwidth}@{}}
 \toprule
 Item & Statement\\
 \midrule
@@ -401,7 +350,7 @@ Known weak point & Scores are not calibrated probabilities. The recession base r
 Prohibited use & Credit decisions about individual firms, regulatory capital calculations, or any use that reads the score as a probability of bankruptcy.\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \section{Conclusion}
 On a large panel of U.S. public firms, a random forest trained on calm pre-crisis years
@@ -418,7 +367,7 @@ training partition. The source panel is licensed and is not redistributed here; 
 figure script accompanying this manuscript regenerates all figures and tables from the
 recorded results, and recomputes the per-year analysis when the raw CSV is supplied.
 
-\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}

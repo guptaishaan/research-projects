@@ -1,18 +1,13 @@
-%% paperstyle.sty -- companion package for the ICAISE 2026 manuscript format.
+%% paperstyle.sty -- companion package for the ACDSA 2027 manuscript format.
 %%
-%% The ICAISE 2026 submission template is the ACM Primary Article Template: a
-%% single-column manuscript with the title / per-author affiliation block, an
-%% unlabelled abstract, CCS concepts, a keyword line, numbered headings,
-%% `Table N:' captions above tables and `Figure N:' captions below figures, and
-%% ACM-Reference-Format bibliography entries.  All of that layout comes from
-%% `acmart' with the `manuscript' option, so this file only supplies the extra
-%% packages and macros the manuscript bodies use.
-%%
-%% Nothing here may re-load a package that acmart already loads *with options*
-%% (geometry, caption, natbib, hyperref, microtype, fontenc, newtx): that raises
-%% an option clash.  Option-free re-loads are idempotent and therefore safe.
+%% ACDSA 2027 (Int'l Conference on AI, Computer, Data Sciences and Applications)
+%% uses the standard IEEE conference Word/LaTeX template: two-column, 10pt Times,
+%% Roman-numeral section headings, "Fig. N." captions below figures, "TABLE N"
+%% captions above tables, and numeric bracket citations. All of that layout comes
+%% from `IEEEtran' with the `conference' option, so this file only supplies the
+%% extra packages and macros the manuscript bodies use.
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{paperstyle}[2026/08/08 ICAISE 2026 manuscript companion]
+\ProvidesPackage{paperstyle}[2026/08/09 ACDSA 2027 manuscript companion]
 
 % ---------------------------------------------------------------- floats/tables
 \RequirePackage{graphicx}
@@ -22,6 +17,8 @@
 \RequirePackage{float}
 
 % ---------------------------------------------------------------- math
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
 \RequirePackage{bm}
 % indicator function; doublestroke ships a Type1 face, unlike bbm
 \RequirePackage{dsfont}
@@ -30,107 +27,37 @@
 % ---------------------------------------------------------------- lists
 \RequirePackage{enumitem}
 
-% ---------------------------------------------------------------- cross-refs
-% cleveref must come after hyperref, which acmart has already loaded by now.
+% ---------------------------------------------------------------- links/refs
+% IEEEtran does not load hyperref itself; cleveref must come after it.
+\RequirePackage[hidelinks,breaklinks=true]{hyperref}
 \RequirePackage[capitalise,noabbrev]{cleveref}
 
+% ---------------------------------------------------------------- keywords
+% The ACDSA template's run-in head is "Keywords" (italic, em-dash), not
+% IEEEtran's own default "Index Terms".
+\newcommand{\paperkeywords}[1]{\textit{Keywords---#1}}
+
 % ---------------------------------------------------------------- author block
-% Every student author carries the same equal-contribution mark.  The first
-% student uses \equalcontrib; the rest repeat the mark with \equalcontribmark.
-\newcommand{\equalcontrib}{%
-  \authornote{These authors contributed equally to this work.}}
-\newcommand{\equalcontribmark}{\authornotemark[1]}
+% Every student author carries the same equal-contribution mark. The first
+% student uses \equalcontrib, which both prints the star and creates the
+% shared footnote; the rest repeat the mark with \equalcontribmark. This is
+% the same fnsymbol-footnote idiom IEEE papers commonly use for author notes.
+\newcommand{\equalcontrib}{\textsuperscript{*}%
+  \begingroup\renewcommand{\thefootnote}{\fnsymbol{footnote}}%
+  \footnote{These authors contributed equally to this work.}\endgroup}
+\newcommand{\equalcontribmark}{\textsuperscript{*}}
 
-%% ------------------------------------------------------------------------
-%% Template-exact topmatter.
-%%
-%% acmart's journal topmatter and the Word template's topmatter differ in
-%% three visible ways.  The template is authoritative here, so we override
-%% acmart rather than the other way round.
-
-% (1) The template has no "Authors' addresses" footer -- the address of each
-%     author is already given under their name.  acmart emits one for journal
-%     formats; suppress it.
-\renewcommand\footnotetextauthorsaddresses[1]{}
-
-% (2) The template gives every author three stacked paragraphs, styled
-%     Authors / Affiliation / Affiliation:
-%
-%         FIRST AUTHOR'S NAME, INITIALS, AND LAST NAME*
-%         First author's affiliation, an Institution with a very long name
-%         E-mail address
-%
-%     acmart's \@mkauthors@i instead joins name and affiliation onto one
-%     comma-separated line and drops the e-mail entirely.  Rebuild the block
-%     by re-reading \addresses with our own \@author/\affiliation/\email.
-%     \authornote/\authornotemark append a \footnotemark to \@currentauthors,
-%     so the name is buffered there and flushed when the next element of the
-%     author block arrives -- that way the equal-contribution star still lands
-%     immediately after the name it belongs to.
-\def\@authorfont{\normalsize\sffamily}
-\def\@affiliationfont{\small\normalfont}
-\def\@flushauthor{%
-  \ifx\@currentauthors\@empty\else
-    \par\noindent{\@authorfont\@currentauthors}%
-  \fi
-  \gdef\@currentauthors{}}
-%     acmart's journal-mode \institution emits a hard-coded `~' before the
-%     name (it is built for the inline "NAME, Institution" layout) and throws
-%     \city and \state away, because in stock acmart those only ever reach the
-%     authors'-addresses footer that (1) removes.  Redefine the four elements
-%     to comma-join flush left.
-\def\@mkauthors{\begingroup
-  \hsize=\textwidth
-  \gdef\@currentauthors{}%
-  \def\institution##1{\global\@ACM@instpresenttrue\unskip##1\ignorespaces}%
-  \def\city##1{\global\@ACM@citypresenttrue\unskip, ##1\ignorespaces}%
-  \def\state##1{\unskip, ##1\ignorespaces}%
-  \def\country##1{\global\@ACM@countrypresenttrue\unskip, ##1\ignorespaces}%
-  \def\@author##1{\@flushauthor
-    \gdef\@currentauthors{\MakeTextUppercase{##1}}}%
-  \def\affiliation##1##2{\@flushauthor
-    \def\@tempa{##2}%
-    \ifx\@tempa\@empty\else
-      \par\noindent{\@affiliationfont
-        \setkeys{@ACM@affiliation@}{obeypunctuation=false}%
-        \setkeys{@ACM@affiliation@}{##1}%
-        \@ACM@resetaffil\ignorespaces ##2\unskip\@ACM@checkaffil}%
-    \fi}%
-  \def\email##1##2{\@flushauthor
-    \par\noindent{\@affiliationfont\ignorespaces ##2\unskip}}%
-  \let\and\relax
-  \global\setbox\mktitle@bx=\vbox{%
-    \noindent\unvbox\mktitle@bx\par\medskip
-    \noindent\addresses\@flushauthor\par\medskip}%
-  \endgroup}
-
-% (3) The template's CCSDescription style is a single bold run of
-%     bullet-separated terms.  acmart instead bolds the general concept,
-%     italicises the specific one, and joins them with an arrow.  Flatten it.
-\renewcommand\ccsdesc[2][100]{\@ccsdesc@plain#2~\@nil}
-\def\@ccsdesc@plain#1~#2~\@nil{%
-  \g@addto@macro\@concepts{\textbullet\ \textbf{#1: #2}\space}}
-
-% (4) The template carries no running head: "This submission version of your
-%     paper should not have headers or footers, these will be added when your
-%     manuscript is processed after acceptance."  Its only running element is
-%     the folio, and footer1.xml is a bare PAGE field.  acmart instead runs
-%     \@shortauthors and \shorttitle across the top of every page.  Strip the
-%     head and put the page number in the footer.
-%     acmart builds both page styles inside \AtBeginDocument, so redefining
-%     them at package-load time is overwritten at \begin{document}.  Ours has
-%     to be an \AtBeginDocument too: package hooks run after the class's.
-\AtBeginDocument{%
-  \fancypagestyle{standardpagestyle}{%
-    \fancyhf{}%
-    \renewcommand{\headrulewidth}{\z@}%
-    \renewcommand{\footrulewidth}{\z@}%
-    \fancyfoot[C]{\if@ACM@printfolios\small\thepage\fi}}%
-  \fancypagestyle{firstpagestyle}{%
-    \fancyhf{}%
-    \renewcommand{\headrulewidth}{\z@}%
-    \renewcommand{\footrulewidth}{\z@}%
-    \fancyfoot[C]{\if@ACM@printfolios\small\thepage\fi}}%
-  \pagestyle{standardpagestyle}}
+% Several papers here carry 8-10 authors. Each \IEEEauthorblockN/A pair is its
+% own independent mini table, sized to its OWN widest line and then joined to
+% its neighbours by a zero-natural-width \hfill; once the row's total content
+% exceeds \textwidth that glue collapses to zero and adjacent blocks visibly
+% touch (worst case: two unbroken e-mail addresses run together with no gap).
+% \@IEEEauthorblockAstyle/\@IEEEauthorblockNstyle hard-code \normalsize
+% internally, so a \footnotesize set before \author{...} has no effect --
+% these two must be overridden directly.
+\let\IEEEoldauthorblockNstyle\@IEEEauthorblockNstyle
+\let\IEEEoldauthorblockAstyle\@IEEEauthorblockAstyle
+\renewcommand{\@IEEEauthorblockNstyle}{\IEEEoldauthorblockNstyle\footnotesize}
+\renewcommand{\@IEEEauthorblockAstyle}{\IEEEoldauthorblockAstyle\footnotesize}
 
 \endinput

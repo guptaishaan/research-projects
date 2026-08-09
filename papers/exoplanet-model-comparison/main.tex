@@ -1,100 +1,49 @@
 %% Accuracy--Interpretability Trade-offs in Exoplanet Transit Modelling
-%% Single-column research manuscript, IEEE house style.
-\documentclass[manuscript,nonacm]{acmart}
+%% ACDSA 2027 two-column manuscript (IEEE conference template).
+\documentclass[10pt,conference]{IEEEtran}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
-
-%% The template numbers its references, so override acmart's author-year default.
-\citestyle{acmnumeric}
-
 \begin{document}
 
 \title{Accuracy--Interpretability Trade-offs in Exoplanet Transit Modelling, and a Label-Free Physics-Informed Estimator of Planetary Radii}
 
-\author{Bhavya Gondra}
-\equalcontrib
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
+\author{
+\IEEEauthorblockN{Bhavya Gondra\equalcontrib}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ Bhavya.gondra@gmail.com}
+\and
+\IEEEauthorblockN{Akhil Muvvala\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ amuvvala2012@gmail.com}
+\and
+\IEEEauthorblockN{Milan Petrov\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ trafficwang532@gmail.com}
+\and
+\IEEEauthorblockN{Harish Senthil\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ harish.senthil.2028@gmail.com}
+\and
+\IEEEauthorblockN{Ayan Sharma\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ ayansh545@gmail.com}
+\and
+\IEEEauthorblockN{Manav Sharma\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ parrots1673@gmail.com}
+\and
+\IEEEauthorblockN{Pranavan Sivaraman\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ s.pranavan19@gmail.com}
+\and
+\IEEEauthorblockN{Adhrit Somayajula\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ aasomayajula@gmail.com}
+\and
+\IEEEauthorblockN{Srikanth Samy}
+\IEEEauthorblockA{University of California, Berkeley\\ Berkeley, USA\\ ssamy@berkeley.edu}
+\and
+\IEEEauthorblockN{Ishaan Gupta}
+\IEEEauthorblockA{Stanford University\\ Stanford, USA\\ ishaangupta@stanford.edu}
+}
 
-\author{Akhil Muvvala}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Milan Petrov}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Harish Senthil}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Ayan Sharma}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Manav Sharma}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Pranavan Sivaraman}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Adhrit Somayajula}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Srikanth Samy}
-\affiliation{%
-  \institution{University of California, Berkeley}
-  \city{Berkeley}
-  \state{California}
-  \country{USA}}
-\email{ssamy@berkeley.edu}
-
-\author{Ishaan Gupta}
-\affiliation{%
-  \institution{Stanford University}
-  \city{Stanford}
-  \state{California}
-  \country{USA}}
-\email{ishaangupta@stanford.edu}
-
+\maketitle
 
 \begin{abstract}
 Transit photometry poses two distinct machine-learning problems: deciding whether a
@@ -120,14 +69,8 @@ $0.001$, demonstrating that reconstruction quality is not a reliable proxy for p
 accuracy.
 \end{abstract}
 
-\ccsdesc[500]{Applied computing~Astronomy}
-\ccsdesc[300]{Computing methodologies~Machine learning}
-\ccsdesc[300]{Computing methodologies~Neural networks}
-
-\keywords{Exoplanets, interpretable machine learning, Kolmogorov--Arnold networks,
+\paperkeywords{Exoplanets, interpretable machine learning, Kolmogorov--Arnold networks,
 physics-informed learning, transit photometry, model comparison.}
-
-\maketitle
 
 \section{Introduction}
 When a planet crosses the disc of its host star along our line of sight, it
@@ -195,15 +138,15 @@ the physics-informed estimator of \cref{sec:physkan} trainable. The reference
 implementation is validated against \texttt{batman}~\cite{kreidberg2015batman}.
 \cref{fig:shapes} shows how each parameter reshapes the dip.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig1_transit_shapes.pdf}
+\includegraphics[width=\textwidth]{fig1_transit_shapes.pdf}
 \caption{Transit profiles from Eq.~\eqref{eq:flux}. Depth scales approximately as
 $\rho^{2}$; a grazing geometry ($b\to1$) rounds the profile and destroys the flat
 bottom; a tighter orbit shortens the crossing. Depth and duration are the two
 observables from which $\rho$ must be inferred.}
 \label{fig:shapes}
-\end{figure}
+\end{figure*}
 
 \subsection{Labelled simulation}
 Each example is a $L=201$-point segment spanning orbital phase $\pm0.10$. Positives draw
@@ -283,7 +226,7 @@ $\mathcal{A}=0.999$ confirms the measurement behaves as intended.
 $\mathcal{A}$. Every family exceeds $\mathrm{AUC}=0.90$; the problem is not hard in
 aggregate, and the differences live at low SNR.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Detection on the held-out synthetic set. $\mathcal{A}$ is additive-surrogate
 fidelity, Eq.~\eqref{eq:additivity}. ``Readable'' marks models whose learned function can
@@ -302,16 +245,16 @@ KAN            & KAN        & 0.943 & 0.900 & \textbf{yes}\\
 LSTM           & neural net & 0.906 & 0.728 & no\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig2_leaderboards.pdf}
+\includegraphics[width=\textwidth]{fig2_leaderboards.pdf}
 \caption{(a) Detection ROC-AUC and (b) characterisation MAE in $R_p/R_*$, coloured by
 model family. Note the axis scales: the detection spread is $0.069$ AUC across all seven
 families, whereas the characterisation spread is nearly a factor of two in error.}
 \label{fig:leaderboards}
-\end{figure}
+\end{figure*}
 
 Two results are worth isolating. First, the LSTM is the weakest model
 ($\mathrm{AUC}=0.906$) despite being the family nominally designed for sequences. A
@@ -357,7 +300,7 @@ reaches $0.0100$---$24\%$ worse, while using \emph{zero} radius labels---and bea
 label-supervised readable models, the KAN ($0.0145$) and ridge ($0.0150$), by a wide
 margin.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Characterisation of $R_p/R_*$ on the held-out synthetic set. Skill is
 $1-\mathrm{MAE}/\Delta R_p$ with $\Delta R_p=0.12$ the sampled range. The physics-KAN is
@@ -377,7 +320,7 @@ KAN            & KAN         & 0.0145 & 0.879 & 0.989 & yes\\
 Logistic/Ridge & linear      & 0.0150 & 0.875 & \textbf{0.997} & yes\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 The physics-informed model's advantage over the readable supervised models is
 structural. Ridge and the plain KAN must both express $\rho$ as an additive function of
@@ -390,16 +333,16 @@ because the coupling is built into its decoder.
 \cref{fig:pareto} places every model on the accuracy--additivity plane. Three
 observations follow.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig3_pareto.pdf}
+\includegraphics[width=\textwidth]{fig3_pareto.pdf}
 \caption{Accuracy against additive-surrogate fidelity. Stars mark directly readable
 models, circles black boxes; the dashed line is the Pareto frontier. On detection (a) the
 frontier is short and the cost of transparency is $0.029$ AUC. On characterisation (b) the
 frontier is long: full readability costs $40\%$ higher error than the best black box,
 while the physics-informed model occupies an intermediate position.}
 \label{fig:pareto}
-\end{figure}
+\end{figure*}
 
 First, the trade-off is real but its exchange rate is task dependent. On detection,
 moving from the MLP ($\mathcal{A}=0.573$) to the fully readable linear model
@@ -423,7 +366,7 @@ real light curve. We apply it, without adaptation, to twelve confirmed Kepler pl
 whose long-cadence photometry has been folded on the published orbital period and binned
 to the same $201$-point grid~\cite{lightkurve2018}.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Zero-shot recovery of $R_p/R_*$ on twelve confirmed Kepler planets. ``Screen''
 is the label-free reconstruction-residual rule: $\checkmark$ retained, $\times$ rejected
@@ -451,17 +394,17 @@ Kepler-12 b   & 0.119 & 0.046 & 0.073 & $\times$\\
 \multicolumn{3}{l}{Screened-subset MAE (exploratory, $n=9$)} & 0.018 & \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig4_real_kepler.pdf}
+\includegraphics[width=\textwidth]{fig4_real_kepler.pdf}
 \caption{(a) An observed Kepler fold with the physics-KAN's reconstruction overlaid.
 (b) Recovered against published radius ratio for all twelve planets; markers indicate the
 label-free reconstruction-residual screen. The three largest published radii are all
 underestimated, the signature of long-cadence smearing.}
 \label{fig:kepler}
-\end{figure}
+\end{figure*}
 
 \subsection{Reading the result honestly}
 The full twelve-planet $\mathrm{MAE}$ is $0.023$, and that is the primary number. It is
@@ -549,7 +492,7 @@ from the transcribed leaderboards and the embedded twelve-planet Kepler sample. 
 source notebook validates the differentiable forward model against
 \texttt{batman}~\cite{kreidberg2015batman} and fixes all data-generation seeds.
 
-\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}

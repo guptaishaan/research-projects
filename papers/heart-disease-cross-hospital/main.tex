@@ -1,99 +1,47 @@
 %% Cross-Hospital Generalization of Heart-Disease Classifiers
-%% Single-column research manuscript, IEEE house style.
-\documentclass[manuscript,nonacm]{acmart}
+%% ACDSA 2027 two-column manuscript (IEEE conference template).
+\documentclass[10pt,conference]{IEEEtran}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 
-
-%% The template numbers its references, so override acmart's author-year default.
-\citestyle{acmnumeric}
-
 \begin{document}
 
-\title{Cross-Hospital Generalization of Heart-Disease Classifiers}
-\subtitle{A Directed Transfer Analysis on Four UCI Cohorts}
+\title{Cross-Hospital Generalization of Heart-Disease Classifiers: A Directed Transfer Analysis on Four UCI Cohorts}
 
-\author{Anoushka Aisola}
-\equalcontrib
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
+\author{
+\IEEEauthorblockN{Anoushka Aisola\equalcontrib}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ anoushka.aisola@gmail.com}
+\and
+\IEEEauthorblockN{Vihaan Bhoopathy\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ vihaanbhoopathy@gmail.com}
+\and
+\IEEEauthorblockN{Rayan Hossain\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ ray.r.hossain@gmail.com}
+\and
+\IEEEauthorblockN{Spoorthi Idumudi\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ ispoorthi.365@gmail.com}
+\and
+\IEEEauthorblockN{Nethra Kollipara\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ nethra.work@gmail.com}
+\and
+\IEEEauthorblockN{Rania Malik\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ raniamalik796@gmail.com}
+\and
+\IEEEauthorblockN{Nishant Nayagam\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ nishnayagam@gmail.com}
+\and
+\IEEEauthorblockN{Yukti Srinivas\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ yukti.srinivas@gmail.com}
+\and
+\IEEEauthorblockN{Srikanth Samy}
+\IEEEauthorblockA{University of California, Berkeley\\ Berkeley, USA\\ ssamy@berkeley.edu}
+\and
+\IEEEauthorblockN{Ishaan Gupta}
+\IEEEauthorblockA{Stanford University\\ Stanford, USA\\ ishaangupta@stanford.edu}
+}
 
-\author{Vihaan Bhoopathy}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Rayan Hossain}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Spoorthi Idumudi}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Nethra Kollipara}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Rania Malik}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Nishant Nayagam}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Yukti Srinivas}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Srikanth Samy}
-\affiliation{%
-  \institution{University of California, Berkeley}
-  \city{Berkeley}
-  \state{California}
-  \country{USA}}
-\email{ssamy@berkeley.edu}
-
-\author{Ishaan Gupta}
-\affiliation{%
-  \institution{Stanford University}
-  \city{Stanford}
-  \state{California}
-  \country{USA}}
-\email{ishaangupta@stanford.edu}
-
+\maketitle
 
 \begin{abstract}
 A clinical risk model can appear excellent under internal validation and still fail
@@ -120,14 +68,8 @@ that external validity should be reported as a transfer matrix accompanied by ab
 target-site performance.
 \end{abstract}
 
-\ccsdesc[500]{Applied computing~Health informatics}
-\ccsdesc[300]{Computing methodologies~Supervised learning by classification}
-\ccsdesc[300]{Computing methodologies~Cross-validation}
-
-\keywords{Clinical machine learning, dataset shift, external validation, heart
+\paperkeywords{Clinical machine learning, dataset shift, external validation, heart
 disease, ROC analysis, reproducibility, transportability.}
-
-\maketitle
 
 \footnotetext[1]{The study uses the public UCI Heart Disease collection and is
 intended as methodological research on external validation. It is not a diagnostic
@@ -184,7 +126,7 @@ y_i = \ind\!\left[\texttt{num}_i > 0\right],
 \end{equation}
 so that $y_i=1$ denotes the presence of coronary artery disease.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{The four source institutions. Prevalence is the fraction of patients with
 $\texttt{num}>0$. ``Absent variables'' counts predictors that the site never records or
@@ -202,7 +144,7 @@ Long Beach VA      & 200 & 0.745 & 56 missing \texttt{trestbps}, 49 zero \texttt
 Total              & 920 & 0.553 & ---\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{Disguised missing values}
 Two variables admit physiologically impossible zeros. Serum cholesterol
@@ -353,7 +295,7 @@ regression are statistically indistinguishable at this sample size
 ($\mathrm{AUC}=0.883$), consistent with the expectation that a $303$-patient tabular
 problem does not support a flexible neural estimator~\cite{riley2021}.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Internal validation on Cleveland, stratified five-fold cross-validation, all
 thirteen predictors ($\mathcal{F}_{13}$). Threshold-dependent metrics use $\hat p\ge0.5$.}
@@ -367,16 +309,16 @@ Random forest       & \textbf{0.842} & \textbf{0.910} & \textbf{0.821}\\
 MLP                 & 0.779 & 0.883 & 0.745\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.62\linewidth]{fig4_internal_cleveland.pdf}
+\includegraphics[width=0.62\textwidth]{fig4_internal_cleveland.pdf}
 \caption{Internal Cleveland performance under stratified five-fold cross-validation with
 all thirteen predictors. The two classical learners are separated by less than one
 standard error of the AUC at this sample size; the neural network is not competitive.}
 \label{fig:internal}
-\end{figure}
+\end{figure*}
 
 Taken alone, \cref{tab:internal} would support a confident claim: an
 $\mathrm{AUC}\approx0.91$ classifier for coronary artery disease. The remainder of the
@@ -387,9 +329,9 @@ Cleveland.
 \cref{fig:matrix} shows the full $4\times4$ directed matrix per model, and
 \cref{tab:pairs} lists the twelve off-diagonal scores. Three structural facts stand out.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig1_transfer_matrix.pdf}
+\includegraphics[width=\textwidth]{fig1_transfer_matrix.pdf}
 \caption{Directed transfer matrices of ROC-AUC on the nine portable variables
 ($\mathcal{F}_{9}$). Rows index the source hospital used for fitting, columns the target
 hospital used for scoring. Boxed diagonal cells are within-site five-fold
@@ -397,9 +339,9 @@ cross-validation with preprocessing refitted per fold; all other cells are stric
 source-only fits scored on an untouched target. The dominant structure is horizontal
 (source-driven), not vertical.}
 \label{fig:matrix}
-\end{figure}
+\end{figure*}
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{All twelve directed source$\rightarrow$target transfers on $\mathcal{F}_{9}$.
 Best model per row in bold.}
@@ -424,7 +366,7 @@ VA          & Switzerland & 0.700 & 0.723 & \textbf{0.746}\\
 \multicolumn{2}{l}{Macro-average external} & 0.745 & \textbf{0.781} & 0.709\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \paragraph{Transfer is not uniformly downward}
 Of the twelve directed pairs, several \emph{exceed} the corresponding internal score.
@@ -451,15 +393,15 @@ model dominates. A practitioner selecting a model from a single held-out target 
 reach a different conclusion depending on which target they happened to hold out---which
 is precisely the failure mode that motivates reporting the whole matrix.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.86\linewidth]{fig3_directed_transfers.pdf}
+\includegraphics[width=0.86\textwidth]{fig3_directed_transfers.pdf}
 \caption{The twelve directed transfers, grouped by source$\rightarrow$target pair. The
 spread \emph{within} a pair (model choice) is generally smaller than the spread
 \emph{across} pairs (cohort choice), except where the source cohort is degenerate
 (Switzerland), in which case model choice becomes decisive.}
 \label{fig:directed}
-\end{figure}
+\end{figure*}
 
 \subsection{The generalization gap is not a robustness score}
 \cref{tab:gap} and \cref{fig:gap} report \cref{eq:macro,eq:gap}. The random forest has
@@ -471,7 +413,7 @@ over different populations: the internal average is dragged down by Switzerland'
 near-degenerate within-site cross-validation ($0.647$) and VA's ($0.648$), whereas the
 external average includes many transfers \emph{into} the two well-behaved cohorts.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Macro-averaged internal and external discrimination on $\mathcal{F}_{9}$, and
 the signed gap of \cref{eq:gap}. A negative gap does not indicate improvement under
@@ -486,17 +428,17 @@ Random forest       & 0.756 & \textbf{0.781} & $-0.025$\\
 MLP                 & 0.713 & 0.709 & $+0.003$\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.66\linewidth]{fig2_generalization_gap.pdf}
+\includegraphics[width=0.66\textwidth]{fig2_generalization_gap.pdf}
 \caption{Macro-averaged internal versus external discrimination. The MLP has the
 smallest magnitude gap and the worst absolute performance; the random forest has a
 negative gap and the best absolute external performance. Ranking models by $|\Delta|$
 would select the weakest model.}
 \label{fig:gap}
-\end{figure}
+\end{figure*}
 
 The MLP illustrates the complementary trap. Its gap is the smallest in magnitude
 ($+0.003$), which under a $|\Delta|$-minimising selection rule would make it the ``most
@@ -581,7 +523,7 @@ This work uses a de-identified public benchmark. It is a methodological study of
 external validation and is explicitly not a diagnostic device. No clinical decision
 should be derived from any model reported here.
 
-\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}

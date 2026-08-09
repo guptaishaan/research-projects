@@ -1,81 +1,41 @@
 %% RadAlert-AT: Cross-Study Radiation-Exposure Triage from Plant Gene Expression
-%% Single-column research manuscript.
-\documentclass[manuscript,nonacm]{acmart}
+%% ACDSA 2027 two-column manuscript (IEEE conference template).
+\documentclass[10pt,conference]{IEEEtran}
 \usepackage{paperstyle}
 
 \graphicspath{{figures/}}
 
-%% The template numbers its references, so override acmart's author-year default.
-\citestyle{acmnumeric}
-
 \begin{document}
 
-\title{When the Target Is Wrong}
-\subtitle{Reframing Plant Radiation Dosimetry as Cross-Study Exposure Triage}
+\title{Reframing Plant Radiation Dosimetry as Cross-Study Exposure Triage}
 
-\author{Sanvi Desai}
-\equalcontrib
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
+\author{
+\IEEEauthorblockN{Sanvi Desai\equalcontrib}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ sanvidesai17@gmail.com}
+\and
+\IEEEauthorblockN{Sushant Donadi\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ sushantdonadi@gmail.com}
+\and
+\IEEEauthorblockN{Gayatri Goli\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ gayatri.shannu@gmail.com}
+\and
+\IEEEauthorblockN{Soham Gupta\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ sohamgupta12@gmail.com}
+\and
+\IEEEauthorblockN{Aswath Madhan\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ aswathmadhan09@gmail.com}
+\and
+\IEEEauthorblockN{Jackson Szekeres\equalcontribmark}
+\IEEEauthorblockA{Nexus Labs\\ Palo Alto, USA\\ jdszekeres@gmail.com}
+\and
+\IEEEauthorblockN{Srikanth Samy}
+\IEEEauthorblockA{University of California, Berkeley\\ Berkeley, USA\\ ssamy@berkeley.edu}
+\and
+\IEEEauthorblockN{Ishaan Gupta}
+\IEEEauthorblockA{Stanford University\\ Stanford, USA\\ ishaangupta@stanford.edu}
+}
 
-\author{Sushant Donadi}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Gayatri Goli}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Soham Gupta}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Aswath Madhan}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Jackson Szekeres}
-\equalcontribmark
-\affiliation{%
-  \institution{Nexus Labs}
-  \city{Palo Alto}
-  \state{California}
-  \country{USA}}
-
-\author{Srikanth Samy}
-\affiliation{%
-  \institution{University of California, Berkeley}
-  \city{Berkeley}
-  \state{California}
-  \country{USA}}
-\email{ssamy@berkeley.edu}
-
-\author{Ishaan Gupta}
-\affiliation{%
-  \institution{Stanford University}
-  \city{Stanford}
-  \state{California}
-  \country{USA}}
-\email{ishaangupta@stanford.edu}
+\maketitle
 
 \begin{abstract}
 Predicting absorbed radiation dose from gene expression is an attractive framing, but it
@@ -98,14 +58,8 @@ selected in every outer fold, which makes the classifier biologically plausible 
 establishing that its markers are specific to radiation rather than to stress in general.
 \end{abstract}
 
-\ccsdesc[500]{Applied computing~Bioinformatics}
-\ccsdesc[300]{Applied computing~Life and medical sciences}
-\ccsdesc[300]{Computing methodologies~Supervised learning by classification}
-
-\keywords{Arabidopsis, domain generalization, gene expression, leave-one-study-out
+\paperkeywords{Arabidopsis, domain generalization, gene expression, leave-one-study-out
 validation, radiation biology, study design, triage}
-
-\maketitle
 
 \section{Introduction}
 A predictive question is only as good as the experimental design behind it. Asking a
@@ -164,16 +118,16 @@ y_i=\ind\!\left[\text{dose}_i>0\ \text{Gy}\right],
 \end{equation}
 and revisit the regression in \cref{sec:regression} as a reported negative result.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig1_design_audit.pdf}
+\includegraphics[width=\textwidth]{fig1_design_audit.pdf}
 \caption{(a) The absorbed-dose distribution is bimodal: $138$ of $158$ samples lie at
 $0$ or $100$~Gy, and the intermediate levels carry $12$, $4$, and $4$ samples
 respectively. (b) Study composition is highly uneven; OSD-508 is $88.9\%$ exposed while
 OSD-510 is balanced, so any protocol that ignores study membership will confound
 exposure with batch.}
 \label{fig:audit}
-\end{figure}
+\end{figure*}
 
 \subsection{Preprocessing provenance}
 The distributed matrix is log-transformed, per-study standardized, and restricted to the
@@ -230,7 +184,7 @@ choice of a single $k$.
 \subsection{Cross-study benchmark}
 \cref{tab:models} and \cref{fig:ladder} give the leave-one-study-out results.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Leave-one-study-out performance, six folds, threshold fixed at $0.5$. All
 adaptive operations are fitted inside the training studies.}
@@ -247,16 +201,16 @@ DDR-7 logistic      & 0.741 & 0.770 & 0.741 & 0.521 & 0.660 & 0.879\\
 Always exposed      & 0.633 & 0.500 & 0.500 & 0.000 & 1.000 & 0.000\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.86\linewidth]{fig2_model_ladder.pdf}
+\includegraphics[width=0.86\textwidth]{fig2_model_ladder.pdf}
 \caption{The model ladder. The always-exposed rule attains $0.633$ accuracy with $0.500$
 balanced accuracy and zero specificity, which is exactly why accuracy is not the primary
 endpoint. Fold-local multigene models improve substantially on the literature panel.}
 \label{fig:ladder}
-\end{figure}
+\end{figure*}
 
 Three comparisons matter. First, the always-exposed rule makes the case for balanced
 metrics concrete: $0.633$ accuracy, $0.500$ balanced accuracy, zero specificity. Second,
@@ -276,15 +230,15 @@ ladder and is the operationally important weakness---roughly one unirradiated co
 four is flagged as exposed, which for a screening instrument means the positive calls
 require confirmation.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig3_error_analysis.pdf}
+\includegraphics[width=\textwidth]{fig3_error_analysis.pdf}
 \caption{(a) Pooled confusion matrix for the stability ensemble. Specificity ($75.9\%$)
 lags sensitivity ($89.0\%$). (b) Per-study performance. OSD-502 is perfectly classified
 and OSD-510 nearly so, while OSD-782 falls to $66.7\%$ balanced accuracy despite an AUC
 of $0.854$---a threshold problem, not a ranking failure.}
 \label{fig:errors}
-\end{figure}
+\end{figure*}
 
 Per-study performance ranges widely: OSD-502 is perfectly separated
 ($\mathrm{AUC}=1.000$, $n=8$), OSD-510 nearly so ($0.993$, $n=48$), while OSD-658 falls
@@ -302,15 +256,15 @@ above the threshold at $10$, $40$, and $80$~Gy. With $n=12$, $4$, and $4$ respec
 these points are descriptive only; the correct reading is that the classifier is not
 purely a $100$~Gy detector, not that it is calibrated across dose.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\linewidth]{fig4_dose_and_roc.pdf}
+\includegraphics[width=\textwidth]{fig4_dose_and_roc.pdf}
 \caption{(a) Mean held-out exposure score by dose. Intermediate doses score above the
 threshold, but with $n\le12$ per level these are descriptive points, not population
 estimates. (b) ROC curves for each completely held-out study, showing the spread that a
 pooled curve conceals.}
 \label{fig:dose}
-\end{figure}
+\end{figure*}
 
 \subsection{Uncertainty at the right unit of analysis}
 There are $158$ samples but only six independent external validation studies. Samples
@@ -319,7 +273,7 @@ treating them as independent replicates would produce intervals that are far too
 for the design~\cite{varoquaux2018}. We therefore bootstrap the six study-level
 scores~\cite{efron1986}. \cref{tab:uncertainty} reports the result.
 
-\begin{table}[t]
+\begin{table*}[!t]
 \centering
 \caption{Study-level bootstrap, $B=10{,}000$ resamples of the six held-out studies. The
 intervals are broad because the design supports six independent observations, not $158$.}
@@ -333,7 +287,7 @@ Balanced accuracy & 0.849 & $[0.757,\ 0.938]$\\
 ROC-AUC           & 0.909 & $[0.846,\ 0.970]$\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 The macro balanced-accuracy interval spans $18$ percentage points. That width is the
 honest headline of this study: the point estimate is encouraging, and the design cannot
@@ -346,13 +300,13 @@ study. \cref{fig:genes} shows the most stable markers. Three canonical
 DNA-damage-response genes---AT4G02390, AT4G22960, and AT5G66130---are selected in all six
 outer folds, alongside cell-cycle, repair, and heat-shock annotated genes.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.78\linewidth]{fig5_stable_genes.pdf}
+\includegraphics[width=0.78\textwidth]{fig5_stable_genes.pdf}
 \caption{Genes selected most often across the six training-fold panels. A gene reaches
 six only if it survives regardless of which study is held out.}
 \label{fig:genes}
-\end{figure}
+\end{figure*}
 
 This concordance with the plant radiation-response
 literature~\cite{culligan2006,missirian2014} makes the classifier biologically plausible.
@@ -370,14 +324,14 @@ and Spearman $\rho=0.523$ (\cref{fig:regression}). Against a dose range of $0$--
 a mean absolute error of a third of the range is not a usable dosimeter, and the
 predictions collapse toward the interior rather than tracking the diagonal.
 
-\begin{figure}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.52\linewidth]{fig6_dose_regression.pdf}
+\includegraphics[width=0.52\textwidth]{fig6_dose_regression.pdf}
 \caption{Secondary task: exact-dose regression under the same leave-one-study-out
 protocol. Predictions cluster in the interior, the signature of a model separating two
 groups rather than estimating a continuous quantity.}
 \label{fig:regression}
-\end{figure}
+\end{figure*}
 
 We report this because it is the evidence for the reframing. The regression is not weak
 because the model is inadequate; it is weak because $87\%$ of the design carries no
@@ -419,11 +373,11 @@ result into a confirmatory one, and would test the specificity claim that the pr
 data cannot address.
 
 \section{Model Card}
-\begin{table}[H]
+\begin{table*}[!t]
 \centering
 \caption{Model card~\cite{mitchell2019modelcards} for the stability ensemble.}
 \label{tab:card}
-\begin{tabular}{@{}p{0.26\linewidth}p{0.68\linewidth}@{}}
+\begin{tabular}{@{}p{0.26\textwidth}p{0.68\textwidth}@{}}
 \toprule
 Item & Statement\\
 \midrule
@@ -438,7 +392,7 @@ Prohibited use & Human dose estimation, individual safety decisions, or claims o
 Known weak point & Specificity ($75.9\%$) lags sensitivity ($89.0\%$); only six external studies exist.\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \section{Conclusion}
 Auditing the target before modelling it changed this study's conclusion from a weak
@@ -456,7 +410,7 @@ stability analysis, and the secondary regression from those files in under a min
 CPU, using scikit-learn~\cite{pedregosa2011}. Seeds, fold definitions, feature counts,
 hyperparameters, target definition, and threshold are fixed in code.
 
-\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}
