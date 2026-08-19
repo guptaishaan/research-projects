@@ -129,6 +129,11 @@ disease, ROC analysis, reproducibility, transportability.}
 
 \maketitle
 
+\hypersetup{
+  pdfauthor={Anoushka Aisola, Vihaan Bhoopathy, Rayan Hossain, Spoorthi Idumudi, Nethra Kollipara, Rania Malik, Nishant Nayagam, Yukti Srinivas, Srikanth Samy, Ishaan Gupta},
+  pdfkeywords={clinical machine learning, dataset shift, external validation, heart disease, ROC analysis, reproducibility, transportability},
+  pdflang={en-US}}
+
 \footnotetext[1]{The study uses the public UCI Heart Disease collection and is
 intended as methodological research on external validation. It is not a diagnostic
 device and must not be used for clinical decisions.}
@@ -394,6 +399,8 @@ MLP                 & 0.779 & 0.883 & 0.745\\
 \caption{Internal Cleveland performance under stratified five-fold cross-validation with
 all thirteen predictors. The two classical learners are separated by less than one
 standard error of the AUC at this sample size; the neural network is not competitive.}
+\Description{A grouped bar chart compares accuracy, ROC-AUC, and F1 for logistic
+regression, random forest, and a multilayer perceptron on Cleveland.}
 \label{fig:internal}
 \end{figure}
 
@@ -413,6 +420,8 @@ hospital used for scoring. Boxed diagonal cells are within-site five-fold
 cross-validation with preprocessing refitted per fold; all other cells are strict
 source-only fits scored on an untouched target. The dominant structure is horizontal
 (source-driven), not vertical.}
+\Description{Three four-by-four heatmaps show directed source-to-target AUC for logistic
+regression, random forest, and the multilayer perceptron.}
 \label{fig:matrix}
 \end{figure}
 
@@ -474,6 +483,8 @@ rankings for different target cohorts. This motivates reporting the complete mat
 spread \emph{within} a pair (model choice) is generally smaller than the spread
 \emph{across} pairs (cohort choice), except where the source cohort is degenerate
 (Switzerland), in which case model choice becomes decisive.}
+\Description{Grouped bars compare the three classifiers across all twelve directed
+hospital-transfer pairs.}
 \label{fig:directed}
 \end{figure}
 
@@ -511,6 +522,8 @@ MLP                 & 0.713 & 0.709 & $+0.003$\\
 smallest magnitude gap and the worst absolute performance; the random forest has a
 negative gap and the best absolute external performance. Ranking models by $|\Delta|$
 would select the weakest model.}
+\Description{Two grouped bar charts compare macro internal and external AUC and display
+their signed difference for each classifier.}
 \label{fig:gap}
 \end{figure}
 

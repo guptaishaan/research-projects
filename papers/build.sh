@@ -42,7 +42,9 @@ for name in "${PAPERS[@]}"; do
     pages=$(pdfinfo main.pdf | awk '/^Pages/{print $2}')
     echo "    pages=$pages  undefined-refs=$bad  overfull=$over"
 
-    mv -f main.pdf "$name.pdf"
+    # Keep both the conventional build artifact and the descriptive submission name.
+    # They must remain byte-identical so reviewers cannot accidentally open a stale PDF.
+    cp -f main.pdf "$name.pdf"
     rm -f main.aux main.blg main.out main.toc main.fls main.fdb_latexmk
 
     rm -f "$name-latex.zip"

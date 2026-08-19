@@ -130,6 +130,11 @@ physics-informed learning, transit photometry, model comparison.}
 
 \maketitle
 
+\hypersetup{
+  pdfauthor={Bhavya Gondra, Akhil Muvvala, Milan Petrov, Harish Senthil, Ayan Sharma, Manav Sharma, Pranavan Sivaraman, Adhrit Somayajula, Srikanth Samy, Ishaan Gupta},
+  pdfkeywords={exoplanets, interpretable machine learning, Kolmogorov-Arnold networks, physics-informed learning, transit photometry, model comparison},
+  pdflang={en-US}}
+
 \section{Introduction}
 When a planet crosses the disc of its host star along our line of sight, it
 occults a fraction of the stellar flux and the star appears momentarily fainter. The
@@ -206,6 +211,8 @@ For $500$ parameter draws, its maximum/mean absolute discrepancies and RMSE rela
 $\rho^{2}$; a grazing geometry ($b\to1$) rounds the profile and destroys the flat
 bottom; a tighter orbit shortens the crossing. Depth and duration are the two
 observables from which $\rho$ must be inferred.}
+\Description{Four synthetic transit profiles illustrate how radius ratio, impact
+parameter, orbital scale, and epoch alter depth, duration, shape, and timing.}
 \label{fig:shapes}
 \end{figure}
 
@@ -325,6 +332,8 @@ LSTM           & neural net & 0.906 & 0.728 & no\\
 \caption{(a) Detection ROC-AUC and (b) characterisation MAE in $R_p/R_*$, coloured by
 model family. Note the axis scales: the detection spread is $0.069$ AUC across all seven
 families, whereas the characterisation spread is nearly a factor of two in error.}
+\Description{Two ranked horizontal bar charts compare model families on detection AUC
+and radius-ratio mean absolute error.}
 \label{fig:leaderboards}
 \end{figure}
 
@@ -428,6 +437,8 @@ models, circles black boxes; the dashed line is the Pareto frontier. On detectio
 frontier is short and the cost of transparency is $0.029$ AUC. On characterisation (b) the
 frontier is long: full readability costs $85\%$ higher error than the best black box,
 while the physics-informed model occupies an intermediate position.}
+\Description{Two scatterplots place each model on performance-versus-additive-fidelity
+axes and connect the non-dominated models with dashed Pareto frontiers.}
 \label{fig:pareto}
 \end{figure}
 
@@ -490,6 +501,8 @@ Kepler-12 b   & 0.119 & 0.046 & 0.073 & $\times$\\
 (b) Recovered against published radius ratio for all twelve planets; markers indicate the
 label-free reconstruction-residual screen. The three largest published radii are all
 underestimated, the signature of long-cadence smearing.}
+\Description{One panel overlays a reconstructed transit on an observed Kepler fold; the
+other compares predicted and published radius ratios for twelve planets.}
 \label{fig:kepler}
 \end{figure}
 

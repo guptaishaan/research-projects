@@ -111,6 +111,11 @@ cross-validation, multimodal learning, transfer learning, zero-shot classificati
 
 \maketitle
 
+\hypersetup{
+  pdfauthor={Saanvi Eha Chandra, Avni Gautam, Krisha Gupta, Neel Ranadive, Aarav Shah, Noah Yoo, Srikanth Samy, Ishaan Gupta},
+  pdfkeywords={catastrophic forgetting, CLIP, fine-tuning dynamics, grouped cross-validation, multimodal learning, transfer learning, zero-shot classification},
+  pdflang={en-US}}
+
 \section{Introduction}
 Contrastively pretrained vision--language models such as
 CLIP~\cite{radford2021clip} derive their practical value from breadth: a single set of
@@ -242,6 +247,8 @@ the property that later makes naive persistence a strong forecaster.
 \caption{Forgetting $\Phi_t$ during fine-tuning for all $16$ datasets at the three
 learning rates. Colour encodes dataset family. Curves are near-monotone and saturating,
 which is the structural reason a persistence forecaster performs well.}
+\Description{Three panels plot forgetting over twenty epochs for every dataset, separated
+by learning rate and coloured by natural, digit, or medical dataset family.}
 \label{fig:curves}
 \end{figure}
 
@@ -274,6 +281,8 @@ natural & 5 & 0.201 & 0.089 & 0.318\\
 \caption{(a) Final forgetting per dataset at $\eta=10^{-5}$, coloured by family.
 (b) Distribution by family. The medical family is highly dispersed, so family membership
 alone is a weak predictor.}
+\Description{A ranked bar chart shows final forgetting for each dataset and a companion
+box plot compares the distributions for digit, medical, and natural-image families.}
 \label{fig:final}
 \end{figure}
 
@@ -307,9 +316,11 @@ shows the co-evolution of the logged signals within a single run.
 \centering
 \includegraphics[width=\linewidth]{fig3_features.pdf}
 \caption{(a) Pearson correlation of each static descriptor with final forgetting across
-the $16$ datasets. All are modest and estimated from $16$ points. (b) The four tracked
-signals for SVHN at $\eta=10^{-5}$, min--max rescaled; the shaded region is the
+the $16$ datasets. All are modest and estimated from $16$ points. (b) Four of the five
+tracked measurements for SVHN at $\eta=10^{-5}$, min--max rescaled; the shaded region is the
 $K=5$ warm-up.}
+\Description{The first panel is a correlation bar chart for four static descriptors; the
+second overlays four rescaled training trajectories and shades the five-epoch warm-up.}
 \label{fig:features}
 \end{figure}
 
@@ -396,6 +407,8 @@ red line is the persistence control of Eq.~\eqref{eq:persist}, which no static-o
 approaches and which the warm-up models beat by only $\approx0.07$.
 (b) Predicted versus actual final forgetting for gradient boosting; each point is one
 held-out run.}
+\Description{A horizontal performance chart compares static and warm-up forecasters with
+persistence, and a scatterplot compares predicted with observed forgetting.}
 \label{fig:quality}
 \end{figure}
 
@@ -454,6 +467,8 @@ each value, including the two model-free controls. Three regimes are visible.
 over persistence is confined to $K\le5$; from $K\approx6$ onward the two curves are
 interchangeable. Slope extrapolation is catastrophic for small $K$ and only becomes
 competitive once there is almost nothing left to forecast.}
+\Description{A line chart plots R-squared against warm-up length for gradient boosting,
+raw persistence, calibrated persistence, and slope extrapolation.}
 \label{fig:warmup}
 \end{figure}
 

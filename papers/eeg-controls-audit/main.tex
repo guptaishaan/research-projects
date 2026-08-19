@@ -120,6 +120,11 @@ simulation, validation}
 
 \maketitle
 
+\hypersetup{
+  pdfauthor={Isha Gupta, Ishaan Mohandas, Ashwath Raghu, Jake Rajbhandari, Anya Samuel, Riva Sheth, Mridhula Suresh, Srikanth Samy, Ishaan Gupta},
+  pdfkeywords={brain-computer interfaces, EEG, explainability, perturbation tests, simulation, validation},
+  pdflang={en-US}}
+
 \section{Introduction}
 Decoders that read motor imagery from scalp EEG are routinely defended with perturbation
 evidence. The analyst removes a frequency band, scrambles or silences a set of
@@ -208,6 +213,8 @@ else.
 spectra at C3 with and without the planted signal; the $\mu$-band bump is present only
 when $s>0$. (c) The planted ground truth: the class contrast in $\mu$ power is confined
 to motor channels by construction.}
+\Description{Three panels show the electrode montage, power spectra with and without the
+planted ten-hertz signal, and a scalp map localising the constructed class contrast.}
 \label{fig:sim}
 \end{figure}
 
@@ -275,6 +282,8 @@ remove occipital). Results over $15$ datasets appear in \cref{fig:toy}.
 the genuinely planted dependence. (b) The linear \textsc{Broad} decoder false-alarms on
 $87\%$ of $\beta$ removals and $100\%$ of occipital removals, where no signal exists.
 \textsc{Tree} sees the identical $38$ features and never false-alarms.}
+\Description{Two heatmaps compare decoder fire rates when a perturbation removes a real
+target and when it removes an absent target.}
 \label{fig:toy}
 \end{figure}
 
@@ -342,6 +351,8 @@ decodability floor. \cref{fig:oc} reports the result.
 high everywhere: all four decoder families detect genuine dependence. (b) False-alarm
 rates differ by more than an order of magnitude. Band-power fires on $67$--$83\%$ of
 perturbations whose targets are absent; EEGNet essentially never does.}
+\Description{Paired heatmaps show sensitivity and false-alarm rates for four decoder
+families across band and spatial perturbations.}
 \label{fig:oc}
 \end{figure}
 
@@ -386,6 +397,8 @@ measured reliability of \cref{fig:oc} to the observed accuracy drop, converting 
 control fired'' into a trust-weighted statement. Band-power and the tree earn no
 trustworthy verdict on any control; EEGNet earns four. (b) Held-out balanced accuracy:
 all decoders read motor imagery above chance.}
+\Description{A categorical heatmap assigns trust or suspicion to each real-decoder
+perturbation result, alongside a bar chart of held-out balanced accuracy.}
 \label{fig:audit}
 \end{figure}
 
@@ -427,6 +440,8 @@ truth. \cref{fig:eoec} shows the outcome.
 where physiology fixes the truth to occipital alpha. Triangles mark controls that should
 fire, dots those that should stay silent; cells give the accuracy drop. Band-power
 false-alarms on three of four absent targets, CSP on both spatial ones.}
+\Description{A two-column heatmap grades band-power and CSP perturbations against known
+eyes-open versus eyes-closed physiology and prints the corresponding accuracy drops.}
 \label{fig:eoec}
 \end{figure}
 
@@ -499,7 +514,7 @@ The accompanying script regenerates the simulator panels and minimal calibration
 \cref{eq:pink,eq:signal} using scikit-learn~\cite{pedregosa2011}. The original minimal
 study uses dataset seeds $0$--$14$; each seed generates $60$ training and $60$ test
 trials per class, with test seed offset $999$. Logistic models standardise features and
-use 	exttt{max\_iter=1000}; the forest uses $200$ trees and seed $0$; $\tau=0.10$.
+use \texttt{max\_iter=1000}; the forest uses $200$ trees and seed $0$; $\tau=0.10$.
 The threshold analysis uses independent seeds $1000$--$1029$, test offset $100{,}000$,
 and $\tau\in\{0.05,0.10,0.15,0.20\}$. CSV files retain aggregate $64$-channel and real
 results, but not the per-retraining full-grid seeds or participant-level scores; this

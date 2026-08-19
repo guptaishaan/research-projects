@@ -107,6 +107,11 @@ validation, radiation biology, study design, triage}
 
 \maketitle
 
+\hypersetup{
+  pdfauthor={Sanvi Desai, Sushant Donadi, Gayatri Goli, Soham Gupta, Aswath Madhan, Jackson Szekeres, Srikanth Samy, Ishaan Gupta},
+  pdfkeywords={Arabidopsis, domain generalization, gene expression, leave-one-study-out validation, radiation biology, study design, triage},
+  pdflang={en-US}}
+
 \section{Introduction}
 A predictive question is only as good as the experimental design behind it. Asking a
 model to estimate absorbed radiation dose from a transcriptome presupposes that the
@@ -172,6 +177,8 @@ $0$ or $100$~Gy, and the intermediate levels carry $12$, $4$, and $4$ samples
 respectively. (b) Study composition is highly uneven; OSD-508 is $88.9\%$ exposed while
 OSD-510 is balanced, so any protocol that ignores study membership will confound
 exposure with batch.}
+\Description{Two stacked bar charts show sample counts by radiation dose and exposed
+versus control composition for each of six studies.}
 \label{fig:audit}
 \end{figure}
 
@@ -262,6 +269,8 @@ Always exposed      & 0.633 & 0.500 & 0.500 & 0.000 & 1.000 & 0.000\\
 \caption{The model ladder. The always-exposed rule attains $0.633$ accuracy with $0.500$
 balanced accuracy and zero specificity, which is exactly why accuracy is not the primary
 endpoint. Fold-local multigene models improve substantially on the literature panel.}
+\Description{Horizontal bars compare six models on accuracy, balanced accuracy,
+ROC-AUC, and Matthews correlation coefficient.}
 \label{fig:ladder}
 \end{figure}
 
@@ -290,6 +299,8 @@ require confirmation.
 lags sensitivity ($89.0\%$). (b) Per-study performance. OSD-502 is perfectly classified
 and OSD-510 nearly so, while OSD-782 falls to $66.7\%$ balanced accuracy despite an AUC
 of $0.854$---a threshold problem, not a ranking failure.}
+\Description{A confusion-matrix heatmap summarizes pooled predictions, and grouped bars
+compare balanced accuracy and ROC-AUC across six held-out studies.}
 \label{fig:errors}
 \end{figure}
 
@@ -317,6 +328,8 @@ only supported reading is that the classifier is not purely a $100$~Gy detector.
 threshold, but with $n\le12$ per level these are descriptive points, not population
 estimates. (b) ROC curves for each completely held-out study, showing the spread that a
 pooled curve conceals.}
+\Description{A dose-versus-score line plot with uncertainty bars is paired with six
+study-specific receiver operating characteristic curves.}
 \label{fig:dose}
 \end{figure}
 
@@ -362,6 +375,8 @@ heat-shock annotated genes.
 \includegraphics[width=0.78\linewidth]{fig5_stable_genes.pdf}
 \caption{Genes selected most often across the six training-fold panels. A gene reaches
 six only if it survives regardless of which study is held out.}
+\Description{A horizontal bar chart ranks genes by the number of outer folds in which
+each gene appears in the selected panel.}
 \label{fig:genes}
 \end{figure}
 
@@ -390,6 +405,8 @@ predictions collapse toward the interior rather than tracking the diagonal.
 \caption{Secondary task: exact-dose regression under the same leave-one-study-out
 protocol. Predictions cluster in the interior, the signature of a model separating two
 groups rather than estimating a continuous quantity.}
+\Description{A scatterplot compares predicted with true radiation dose and shows most
+predictions compressed toward the middle of the zero-to-one-hundred-gray range.}
 \label{fig:regression}
 \end{figure}
 

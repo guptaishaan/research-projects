@@ -113,6 +113,11 @@ ratios, class imbalance}
 
 \maketitle
 
+\hypersetup{
+  pdfauthor={Ayush Bodalia, Vishruth Burra, Arnav Deokule, Shravan Ginde, Sahasra Namburu, Kavindran Rajangam, Sreehaas Voruganti, Srikanth Samy, Ishaan Gupta},
+  pdfkeywords={bankruptcy prediction, distribution shift, temporal validation, financial ratios, class imbalance},
+  pdflang={en-US}}
+
 \section{Introduction}
 Models that flag firms at risk of failure are central to credit and investment
 decisions. Their operational value depends on \emph{temporal} robustness: a model fit on
@@ -166,6 +171,8 @@ ones---lower profitability and higher leverage---which is the signal our models 
 \caption{(a) Raw status labels: $6.6\%$ of company-years belong to firms that eventually
 failed. (b) The imminent-failure target is far rarer still. Dropping the non-final years
 of failed firms leaves $74{,}071$ rows, of which only $609$ ($0.82\%$) are positive.}
+\Description{Two bar charts compare the raw surviving-versus-failed labels with the much
+rarer imminent-failure target after earlier records from failed firms are removed.}
 \label{fig:balance}
 \end{figure}
 
@@ -248,6 +255,8 @@ the resulting partitions.
 recession window carries roughly twice the imminent-failure rate of the calm training
 data ($1.13\%$ versus $0.57\%$). (b) The share of company-years labelled
 \texttt{failed} drifts substantially over the panel.}
+\Description{The first panel compares row counts and positive rates for the calm training,
+calm test, and recession partitions; the second plots the failed-label share by year.}
 \label{fig:splits}
 \end{figure}
 
@@ -326,6 +335,8 @@ not a statistically resolved improvement.
 \caption{(a) Calm versus recession ROC-AUC per model. Taller red than blue means the
 model holds up. (b) The signed change of Eq.~\eqref{eq:change}: only the random forest
 is positive, and it is the only model that was strong to begin with.}
+\Description{Grouped bars compare calm and recession AUC for three classifiers, while a
+second panel shows each signed AUC change around a zero reference line.}
 \label{fig:stress}
 \end{figure}
 
@@ -390,6 +401,8 @@ rose across the regime change.
 \caption{Only estimates computed on firms excluded from training are comparable. A
 per-year curve scored on calm years is contaminated by training-firm overlap (left,
 hatched) and cannot be placed on the same axis as the two valid estimates.}
+\Description{A comparison graphic marks the overlapping per-year estimate as contaminated
+and contrasts it with the valid held-out calm and recession estimates.}
 \label{fig:artifact}
 \end{figure}
 
