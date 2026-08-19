@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{16}
+\begin{thebibliography}{18}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -116,6 +116,17 @@
 \newblock
 
 
+\bibitem[Hanley and McNeil(1982)]%
+        {hanley1982}
+\bibfield{author}{\bibinfo{person}{James~A. Hanley} {and}
+  \bibinfo{person}{Barbara~J. McNeil}.} \bibinfo{year}{1982}\natexlab{}.
+\newblock \showarticletitle{The Meaning and Use of the Area under a Receiver
+  Operating Characteristic Curve}.
+\newblock \bibinfo{journal}{\emph{Radiology}} \bibinfo{volume}{143},
+  \bibinfo{number}{1} (\bibinfo{year}{1982}), \bibinfo{pages}{29--36}.
+\newblock
+
+
 \bibitem[Kapoor and Narayanan(2023)]%
         {kapoor2023leakage}
 \bibfield{author}{\bibinfo{person}{Sayash Kapoor} {and} \bibinfo{person}{Arvind
@@ -162,6 +173,19 @@
   Accountability, and Transparency}} (\bibinfo{year}{2019}),
   \bibinfo{pages}{220--229}.
 \newblock
+
+
+\bibitem[{NBER Business Cycle Dating Committee}(2010)]%
+        {nber2010}
+\bibfield{author}{\bibinfo{person}{{NBER Business Cycle Dating Committee}}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \bibinfo{title}{Announcement of September 20, 2010}.
+\newblock \bibinfo{howpublished}{National Bureau of Economic Research}.
+\newblock
+\urldef\tempurl%
+\url{https://www.nber.org/news/business-cycle-dating-committee-announcement-september-20-2010}
+\showURL{%
+\tempurl}
 
 
 \bibitem[Ohlson(1980)]%

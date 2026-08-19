@@ -93,7 +93,7 @@ exact-dose regression yields $33.6$~Gy mean absolute error and Spearman $\rho=0.
 negative result that motivated the reframing. Because the independent unit is a study
 and not a sample, we bootstrap over the six study-level scores rather than over the $158$
 samples, giving a macro balanced accuracy of $0.849$ with a $95\%$ interval of
-$[0.757,0.938]$---broad, and honestly so. Three canonical DNA-damage-response genes are
+$[0.757, 0.938]$---broad, and honestly so. Three canonical DNA-damage-response genes are
 selected in every outer fold, which makes the classifier biologically plausible without
 establishing that its markers are specific to radiation rather than to stress in general.
 \end{abstract}
@@ -181,8 +181,15 @@ $4{,}002$ most variable genes. Per-study standardization suppresses laboratory-s
 batch effects~\cite{leek2010batch}, but it is transductive: it uses the distribution of
 an entire study, including its test samples, before any label is predicted. Our benchmark
 is therefore conditional on this supplied representation. A deployable pipeline would
-require a reference-based normalization that can transform a single incoming sample, and
-we flag this as the principal gap between the present result and a usable assay.
+require a reference-based normalization that can transform a single incoming sample.
+Concretely, a reference panel must be frozen using training studies; library-size or
+variance-stabilising transforms, per-gene centres and scales, and quality-control limits
+must then be learned from that panel and applied unchanged to each incoming sample.
+External spike-ins or validated housekeeping genes could anchor the transform, while
+reference samples processed with every laboratory batch would monitor drift. No cohort
+statistics from the incoming study may enter prediction. Developing and prospectively
+validating that single-sample transform is the principal gap between this benchmark and
+a usable assay.
 
 \section{Evaluation Protocol}
 
@@ -299,8 +306,9 @@ The intermediate levels are far too sparse for dose--response claims, but they t
 whether the binary model merely memorised the $100$~Gy condition.
 \cref{fig:dose}(a) shows the mean held-out exposure score rising with dose and remaining
 above the threshold at $10$, $40$, and $80$~Gy. With $n=12$, $4$, and $4$ respectively,
-these points are descriptive only; the correct reading is that the classifier is not
-purely a $100$~Gy detector, not that it is calibrated across dose.
+these points are descriptive only. Dose is also confounded with study, radiation quality,
+and tissue, so neither monotonicity nor a dose--response relation can be inferred. The
+only supported reading is that the classifier is not purely a $100$~Gy detector.
 
 \begin{figure}[t]
 \centering
@@ -342,9 +350,12 @@ presently distinguish $0.76$ from $0.94$.
 \subsection{Which genes are selected consistently?}
 Repeating the fold-local selector and counting how often each gene enters the top-100
 panel gives a stability profile that, unlike a single fit, cannot be driven by one
-study. \cref{fig:genes} shows the most stable markers. Three canonical
-DNA-damage-response genes---AT4G02390, AT4G22960, and AT5G66130---are selected in all six
-outer folds, alongside cell-cycle, repair, and heat-shock annotated genes.
+study. Across all $4{,}002$ genes, $186$ enter at least one top-100 panel: $72$ are
+selected in one fold, $19$ in two, $8$ in three, $16$ in four, $24$ in five, and $47$
+in all six (median frequency $3$ among selected genes). \cref{fig:genes} shows the most
+stable subset. Three canonical DNA-damage-response genes---AT4G02390, AT4G22960, and
+AT5G66130---are selected in all six outer folds, alongside cell-cycle, repair, and
+heat-shock annotated genes.
 
 \begin{figure}[t]
 \centering
@@ -354,8 +365,11 @@ six only if it survives regardless of which study is held out.}
 \label{fig:genes}
 \end{figure}
 
-This concordance with the plant radiation-response
-literature~\cite{culligan2006,missirian2014} makes the classifier biologically plausible.
+Ionising radiation can generate reactive oxygen species and DNA lesions, activating
+damage sensing, repair, cell-cycle arrest, and general stress programmes. The observed
+cell-cycle, repair, and heat-shock annotations therefore agree with known plant
+radiation biology~\cite{culligan2006,missirian2014} and make the classifier biologically
+plausible.
 It does not make these genes radiation biomarkers. The same DNA-damage and oxidative
 programmes are induced by drought, heat, pathogens, and chemical
 clastogens~\cite{missirian2014,degroote2018}, and this collection contains no
@@ -410,13 +424,25 @@ with exposure in this collection but have not been tested against non-radiation
 stressors. Finally, the intermediate-dose analysis rests on four samples per level and
 should not be read as a dose--response result.
 
+Deployment would also cross several untested boundaries: sequencing platform and
+laboratory, genotype and tissue, radiation quality and time since exposure, and the
+prevalence-dependent calibration of the fixed $0.5$ threshold. A deployable screen
+therefore requires a frozen single-sample normalization, laboratory quality controls,
+prospective calibration, an abstention rule for out-of-distribution samples, and
+confirmation of positive calls by an independent assay. The present classifier is a
+cross-study research benchmark, not a field-ready diagnostic.
+
 \subsection{The recommended next experiment}
 The most valuable addition is not another model or another decimal place. It is a
 genuinely untouched seventh study containing multiple doses, biological replicates, and
 non-radiation stress controls, opened only after the $50/100$-gene ensemble and the
-$0.5$ threshold have been frozen. That single experiment would convert an exploratory
-result into a confirmatory one, and would test the specificity claim that the present
-data cannot address.
+$0.5$ threshold have been frozen. A Fisher-$z$ calculation requires about $29$
+independent samples for $80\%$ power at two-sided $\alpha=0.05$ to detect a correlation
+of $0.5$. We therefore recommend at least $30$ independent biological replicates across
+at least five prespecified doses (at least six per dose) as a minimum confirmatory curve,
+preferably repeated in more than one study. This is a planning lower bound, not enough
+by itself to establish cross-study generalisation. The experiment would also test the
+specificity claim that the present data cannot address.
 
 \section{Model Card}
 \begin{table}[H]
@@ -434,7 +460,7 @@ Positive class & Absorbed dose greater than $0$~Gy.\\
 Primary metrics & Balanced accuracy and ROC-AUC; raw accuracy is supporting.\\
 Decision threshold & Fixed at $0.50$; never tuned.\\
 Adaptive operations & $F$-test gene selection, scaling, and model fitting, all inside the training fold.\\
-Prohibited use & Human dose estimation, individual safety decisions, or claims of causal biomarkers.\\
+Prohibited use & Continuous-dose estimation, human dose estimation, individual safety decisions, or claims of causal biomarkers.\\
 Known weak point & Specificity ($75.9\%$) lags sensitivity ($89.0\%$); only six external studies exist.\\
 \bottomrule
 \end{tabular}
@@ -449,12 +475,16 @@ returns $33.6$~Gy error. The governing uncertainty is the number of studies, not
 number of samples, and the study-level intervals say so plainly.
 
 \section*{Reproducibility}
-The repository contains the harmonized matrix, the sample manifest, two raw-study
-examples, and the annotation tables. The figure script accompanying this manuscript
+The repository contains the harmonized matrix, sample manifest, raw-study examples,
+annotation tables, and environment specification in the
+\href{https://github.com/guptaishaan/research-projects/tree/icaise-2026-format/raddose-phytodosimetry}{public repository}.
+The figure script accompanying this manuscript
 re-runs the entire leave-one-study-out benchmark, the study-level bootstrap, the gene
 stability analysis, and the secondary regression from those files in under a minute on a
-CPU, using scikit-learn~\cite{pedregosa2011}. Seeds, fold definitions, feature counts,
-hyperparameters, target definition, and threshold are fixed in code.
+CPU, using scikit-learn~\cite{pedregosa2011}. The requirements specify Python 3.11 and
+minimum versions NumPy 1.24, pandas 2.0, Matplotlib 3.7, scikit-learn 1.3, SciPy 1.10,
+and PyArrow 12. Seeds, fold definitions, feature counts, hyperparameters, target
+definition, and threshold are fixed in code.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}

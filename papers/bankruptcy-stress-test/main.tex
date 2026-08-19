@@ -96,10 +96,10 @@ engineer $15$ Altman-style financial ratios. Training on 1999--2006 with a
 company-grouped split to prevent leakage, a random forest attains a held-out ROC-AUC of
 $0.755$, well ahead of logistic regression ($0.646$) and a multilayer perceptron
 ($0.625$); the distress boundary is strongly nonlinear. Stress-testing the frozen
-calm-era models on the 2008--2009 recession, the random forest does not degrade but
-\emph{improves} to $0.798$ AUC, while the linear and neural models slip. The
-financial-distress signal is thus stable, even sharper, under crisis conditions: the
-model survives the stress test. We also show that a naive per-year AUC curve suggests a
+calm-era models on the 2008--2009 recession, the random-forest point estimate rises to
+$0.798$ AUC, while the linear and neural estimates slip. Analytic $95\%$ confidence
+intervals overlap across periods, so the supported conclusion is preservation rather
+than statistically established improvement. We also show that a naive per-year AUC curve suggests a
 spurious ``cliff'' at 2007 that is an evaluation artifact of training-set overlap,
 underscoring the importance of leakage-free temporal validation.
 \end{abstract}
@@ -132,8 +132,8 @@ robust?}
       outperforms linear and neural alternatives, locating the difficulty of the problem
       in the nonlinearity of the distress boundary rather than in the feature set.
 \item A temporal stress test that freezes the calm-era models and applies them to the
-      2008--2009 recession, finding that the random forest does not merely survive the
-      regime change but improves on it, while the linear and neural models slip.
+      2008--2009 recession, finding that the random-forest point estimate is preserved
+      and rises modestly, while the linear and neural estimates slip.
 \item A cautionary analysis of a per-year evaluation artifact that can masquerade as a
       crisis-induced collapse, and which disappears once training-set overlap is
       removed.
@@ -187,7 +187,7 @@ bankruptcy.
 \subsection{Features}
 Raw dollar magnitudes are size-confounded---a \$1M loss is fatal for a small firm and a
 rounding error for a large one. From the $18$ raw variables we therefore build $15$
-Altman-style ratios~\cite{altman1968,ohlson1980}: return on assets, EBIT/assets,
+financial ratios~\cite{altman1968,ohlson1980}: return on assets, EBIT/assets,
 EBITDA/assets, working-capital/assets, retained-earnings/assets, sales/assets, leverage,
 long-term-debt/assets, market-value/liabilities, current ratio, gross and net margins,
 inventory/assets, receivables/assets, and $\log(1+\text{total assets})$ as a size term.
@@ -204,7 +204,12 @@ standardized, with all three statistics estimated on the training rows only:
 Logistic regression predicts $\hat{p}(x)=\sigma(w^{\!\top}\tilde{x}+b)$; the random
 forest~\cite{breiman2001} averages $400$ decision trees with a minimum of three samples
 per leaf; the MLP applies two ReLU hidden layers ($64$ and $32$ units) with dropout
-$0.3$ and a sigmoid output, trained with Adam~\cite{kingma2015adam} and early stopping.
+$0.3$ and a sigmoid output. It uses Adam~\cite{kingma2015adam} at learning rate
+$10^{-3}$, batch size $256$, at most $120$ epochs, and early stopping with patience $12$
+on a $15\%$ validation split. This was one prespecified compact architecture, not the
+result of an architecture search. With only about $150$ positive training rows, its
+lower AUC is consistent with data scarcity and limited tuning rather than evidence that
+neural models are intrinsically unsuitable.
 Given the extreme imbalance, all models use class weighting; the MLP minimizes a
 weighted binary cross-entropy
 \begin{equation}
@@ -221,15 +226,20 @@ one~\cite{fawcett2006},
 \end{equation}
 and PR-AUC (average precision), whose no-skill baseline equals the positive rate. With a
 base rate near $0.6\%$, PR-AUC is the more demanding summary and the more honest one for
-a rare-event problem~\cite{davis2006,saito2015}.
+a rare-event problem~\cite{davis2006,saito2015}. We accompany AUC point estimates with
+Hanley--McNeil large-sample $95\%$ confidence intervals computed from the observed
+positive and negative counts~\cite{hanley1982}.
 
 \subsection{Validation protocol}
 The calm era (1999--2006) is split \emph{by company} using a grouped shuffle split, so
 that a firm never appears in both training and calm-test partitions. This matters
 because each firm contributes several highly correlated yearly rows; a random row split
 would let the model recognise a company rather than learn a warning sign. The recession
-window (2008--2009) is held out entirely for the stress test, and 2007 is excluded as a
-transition year. \cref{fig:splits} summarises the resulting partitions.
+window (2008--2009) is held out entirely for the stress test. The NBER dates the
+recession's onset to December 2007~\cite{nber2010}; fiscal-year 2007 therefore mixes
+mostly pre-recession activity with the beginning of the contraction. We exclude it
+rather than assign this transition year to either regime. \cref{fig:splits} summarises
+the resulting partitions.
 
 \begin{figure}[t]
 \centering
@@ -276,13 +286,18 @@ MLP                 & 0.625 & 0.012\\
 \end{tabular}
 \end{table}
 
+The corresponding AUC $95\%$ intervals are $[0.567,0.725]$ for logistic regression,
+$[0.681,0.829]$ for the random forest, and $[0.546,0.704]$ for the MLP. The intervals
+reinforce the forest's advantage over the two lower point estimates while showing the
+uncertainty created by only $56$ positive calm-test rows.
+
 \subsection{The 2008--2009 stress test}
 \cref{tab:stress} and \cref{fig:stress} report the frozen calm-era models applied to the
 recession. The random forest does not degrade; its AUC \emph{rises} to $0.798$
 ($\Delta=+0.042$). The linear and neural models slip modestly ($\Delta=-0.031$ and
-$-0.050$). Firms about to fail during the crisis are, if anything, \emph{easier} to
-identify from their financial ratios than in calm times---distress is a stable, even
-sharpened, signal. By ranking, the model survives the stress test.
+$-0.050$). The recession estimate is consistent with financial distress remaining at
+least as separable as in calm times; it does not establish that crisis failures are
+universally easier to identify. By ranking, the model survives the stress test.
 
 \begin{table}[t]
 \centering
@@ -300,6 +315,11 @@ MLP                 & 0.625 & 0.575 & $-0.050$\\
 \end{tabular}
 \end{table}
 
+Recession AUC $95\%$ intervals are $[0.549,0.681]$ (logistic), $[0.740,0.856]$
+(random forest), and $[0.510,0.640]$ (MLP). The random forest's calm and recession
+intervals overlap, so its $+0.042$ change is a descriptive point-estimate difference,
+not a statistically resolved improvement.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig3_stress_test.pdf}
@@ -316,6 +336,32 @@ this is why we make ROC-AUC the primary endpoint. Second, the ranking that survi
 not a calibrated probability. A threshold tuned on calm-era scores will fire at a
 different rate when the underlying failure rate roughly doubles, so operating points
 must be re-calibrated even though the ordering is preserved~\cite{vancalster2019}.
+
+\subsection{Which financial signals drive the forest?}
+After completing evaluation, we refit the prespecified forest to all calm-era rows for
+descriptive interpretation. \cref{tab:importance} reports its five largest
+impurity-based importances. Market value relative to liabilities and leverage dominate,
+followed by liquidity, working capital, and profitability. This agrees with the classic
+distress literature but is associative, not causal, and impurity importance can favour
+variables offering more candidate split points.
+
+\begin{table}[t]
+\centering
+\caption{Largest random-forest feature importances after a descriptive refit to all
+calm-era rows. Importances sum to one across all $15$ ratios.}
+\label{tab:importance}
+\begin{tabular}{lr}
+\toprule
+Financial signal & Importance\\
+\midrule
+Market value / liabilities & 0.142\\
+Leverage (liabilities / assets) & 0.119\\
+Current ratio & 0.075\\
+Working capital / assets & 0.063\\
+Return on assets & 0.062\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{A per-year artifact that looks like a crisis break}
 \label{sec:artifact}
@@ -357,7 +403,7 @@ Because financial ratios encode the mechanics of insolvency---eroding profitabil
 mounting leverage, shrinking liquidity---the calm-era decision surface transfers to the
 recession, where these signatures are sharper.
 
-That the random forest is simultaneously the most accurate and the most robust deserves
+That the random forest is simultaneously the most accurate and the most stable by point estimate deserves
 comment, because flexibility and robustness are often assumed to trade off. Here the
 distress boundary is genuinely nonlinear, so the linear model is misspecified in both
 regimes and has no robustness advantage to offer; its smaller absolute loss under shift
@@ -371,9 +417,11 @@ failures; they should be read as directional. The imminent-failure label---the f
 reporting year---is a proxy for the legal bankruptcy date. Firms recur across the calm
 and recession windows, so the transfer is across \emph{time} rather than to entirely new
 firms; this is realistic for re-scoring a portfolio but is a caveat for generalization
-to unseen issuers. We report a single seed and a single design, with no confidence
-intervals, so differences smaller than roughly $0.02$ AUC should not be interpreted.
-Finally, survivorship and reporting biases affect which firms appear in the panel at all.
+to unseen issuers. The analytic AUC intervals treat company-years as independent and
+may be too narrow because surviving firms contribute repeated rows; a company-cluster
+bootstrap of saved predictions would be preferable. We report one split and seed, so
+small differences remain uncertain. Finally, survivorship and reporting biases affect
+which firms appear in the panel at all.
 
 \section{Model Card}
 \cref{tab:card} states the intended and prohibited uses of the calm-era random forest in
@@ -406,8 +454,9 @@ Prohibited use & Credit decisions about individual firms, regulatory capital cal
 \section{Conclusion}
 On a large panel of U.S. public firms, a random forest trained on calm pre-crisis years
 predicts imminent bankruptcy at $0.755$ ROC-AUC and \emph{survives} the 2008--2009
-recession, improving to $0.798$, while simpler models slip. Financial-distress signals
-are temporally robust, and a per-year evaluation artifact can falsely suggest a
+recession, with a point estimate of $0.798$ while simpler models slip. The confidence
+intervals overlap, supporting preservation but not a resolved improvement. A per-year
+evaluation artifact can falsely suggest a
 crisis-induced collapse. We recommend leakage-free temporal validation and threshold
 re-calibration for deployment across economic regimes.
 

@@ -86,20 +86,20 @@ eroding the zero-shot competence that made the model valuable. We ask whether th
 \emph{final} magnitude of that erosion can be forecast from a short warm-up of the
 fine-tuning run. Our experiment comprises $48$ fine-tuning runs of CLIP ViT-B/32
 ($16$ specialised datasets $\times$ $3$ learning rates $\times$ $20$ epochs), logging
-five trajectory signals after every epoch and measuring forgetting as the mean drop in
+five trajectory measurements after every epoch and measuring forgetting as the mean drop in
 zero-shot accuracy over CIFAR-100, CIFAR-10, and STL-10. Forecasters are evaluated by
 leave-one-dataset-out cross-validation, so that all three learning-rate runs of a
-held-out dataset are unseen. Four cheap pre-training descriptors alone reach
+held-out dataset are unseen. Four cheap dataset descriptors plus learning rate reach
 $R^2=0.43$; adding a five-epoch warm-up raises this to $R^2=0.92$ and cuts mean absolute
 error from $0.070$ to $0.025$. Simple tabular regressors beat both an MLP
 ($R^2=-0.66$) and an LSTM ($R^2=0.81$) in this $48$-row, $16$-group regime. Critically,
-we add the persistence control that the underlying study identified as missing:
-predicting final forgetting to equal forgetting at the end of the warm-up already
-attains $R^2=0.85$ and Spearman $\rho=0.945$. The learned forecaster's advantage over
-naive curve continuation is therefore real but narrow, and it is confined to very short
-warm-ups ($K\le5$); beyond $K\approx6$ the two are indistinguishable. We conclude that
-most of the ``forecasting'' signal is trajectory persistence, and that future work in
-this area must report a persistence baseline to make a meaningful claim.
+we compare raw persistence with a calibrated persistence baseline fitted inside each
+training fold. Calibrated persistence attains $R^2=0.919$ and MAE $0.026$, statistically
+indistinguishable at the dataset level from gradient boosting ($R^2=0.917$, MAE $0.025$;
+MAE-difference $95\%$ CI $[-0.0065,0.0047]$). Thus the warm-up contains strong predictive
+information, but this campaign does not show that drift or loss features improve on a
+simple calibration of $\Phi_5$. Future work must report both raw and calibrated
+persistence controls.
 \end{abstract}
 
 \ccsdesc[500]{Computing methodologies~Machine learning}
@@ -150,21 +150,20 @@ We report that comparison explicitly, and it substantially tempers the headline.
 \item A grouped (leave-one-dataset-out) forecasting benchmark in which every
       normalisation and model fit occurs inside the fold, comparing five estimator
       families under a static-only versus static-plus-warm-up ablation.
-\item \textbf{A persistence control.} We show that $\hat\Phi_T=\Phi_K$ reaches
-      $R^2=0.85$, so that the learned forecaster's $R^2=0.92$ represents a
-      $0.07$ improvement over curve continuation rather than the $0.49$ improvement
-      suggested by the static-only ablation alone.
-\item A characterisation of \emph{where} learning helps: the learned model dominates
-      persistence only for $K\le5$, the regime where aborting a run still saves
-      meaningful compute.
+\item \textbf{Persistence controls.} We show that $\hat\Phi_T=\Phi_K$ reaches
+      $R^2=0.85$, and a fold-local linear calibration of that rule reaches
+      $R^2=0.919$.
+\item Dataset-cluster bootstrap intervals and learning-rate-stratified results showing
+      that the best learned model and calibrated persistence cannot be distinguished in
+      this $16$-dataset campaign.
 \end{enumerate}
 
 \section{Experimental Design}
 
 \subsection{Model and forgetting definition}
 All runs start from CLIP ViT-B/32 with the original OpenAI pretrained weights
-($151.3$M parameters). Zero-shot classification follows the standard prompt-ensembling
-recipe: for class names $c_1,\dots,c_M$ we build prompts
+($151.3$M parameters). Zero-shot classification uses one fixed prompt template: for
+class names $c_1,\dots,c_M$ we build prompts
 $\texttt{"a photo of a }c_m\texttt{."}$, encode them with the text tower, $\ell_2$-
 normalise, and predict
 \begin{equation}
@@ -201,7 +200,8 @@ The encoder uses learning rate $\eta\in\{10^{-6},5\times10^{-6},10^{-5}\}$, the 
 uses $10^{-3}$, weight decay is $10^{-4}$, batch size is $128$, and every dataset is
 subsampled to an identical budget of $4000$ training images so that a large corpus
 cannot appear to cause more forgetting merely by supplying more gradient steps. This
-yields $16\times3=48$ runs of $20$ epochs.
+yields $16\times3=48$ runs of $20$ epochs. NumPy and PyTorch seeds are fixed at $42$;
+there is one run per configuration.
 
 \subsection{Datasets}
 The $16$ target datasets fall into three families by visual distance from web
@@ -212,15 +212,16 @@ or $32\times32$ and must be upsampled roughly eightfold to CLIP's $224\times224$
 which introduces a systematic blur absent from the natural family.
 
 \subsection{Logged signals}
-After every epoch we record five quantities. Beyond $\Phi_t$ and the training loss and
+After every epoch we record five trajectory measurements. Beyond $\Phi_t$ and the training loss and
 accuracy, two measure how far the network has physically moved from its initialisation:
 \begin{align}
-\delta^{\mathrm{par}}_t &= \frac{\lVert \boldsymbol{\theta}_t-\boldsymbol{\theta}_0\rVert_2}
-                                {\lVert \boldsymbol{\theta}_0\rVert_2}, \label{eq:pdrift}\\[2pt]
+\delta^{\mathrm{par}}_t &= \lVert \boldsymbol{\theta}_t-\boldsymbol{\theta}_0\rVert_2,
+                                \label{eq:pdrift}\\[2pt]
 \delta^{\mathrm{emb}}_t &= \mathbb{E}_{\mathbf{x}\sim\mathcal{P}}
-   \left[\,1-\cos\!\big(f_t(\mathbf{x}),\,f_0(\mathbf{x})\big)\right], \label{eq:edrift}
+   \left[\lVert f_t(\mathbf{x})-f_0(\mathbf{x})\rVert_2\right], \label{eq:edrift}
 \end{align}
-where $\mathcal{P}$ is a fixed probe set of general images. Equation~\eqref{eq:pdrift}
+where $\mathcal{P}$ is a fixed set of $500$ CIFAR-100 probe images and the embeddings
+are $\ell_2$-normalised. Equation~\eqref{eq:pdrift}
 is parameter drift, \eqref{eq:edrift} is representation drift. Both are plausible early
 proxies for damage, because forgetting is ultimately a consequence of the encoder's
 outputs moving away from the geometry the text tower was aligned to.
@@ -279,8 +280,9 @@ alone is a weak predictor.}
 \section{Forecasting Setup}
 
 \subsection{Features}
-Each of the $48$ runs becomes one row. The \emph{static} block $\mathbf{s}_d$ contains
-four descriptors computed before any training, plus $\log_{10}\eta$:
+Each of the $48$ runs becomes one row. The \emph{static} block $\mathbf{s}_{d,\eta}$
+contains five predictors: four dataset descriptors computed before any training, plus
+$\log_{10}\eta$:
 \begin{itemize}
 \item \texttt{semantic\_dist}: $1-$ pretrained zero-shot accuracy on $d$;
 \item \texttt{clip\_embed\_dist}: distance between the mean CLIP embedding of $d$ and
@@ -328,15 +330,16 @@ LSTM~\cite{hochreiter1997lstm} over the raw warm-up sequence, concatenated with 
 static block, is evaluated separately because it consumes the warm-up in ordered form.
 All are implemented in scikit-learn~\cite{pedregosa2011sklearn} except the LSTM.
 
-We additionally define two \emph{model-free} controls, which are the methodological
-core of this paper:
+We additionally define three persistence-oriented controls:
 \begin{align}
 \text{Persistence:}\quad & \hat\Phi_T=\Phi_K, \label{eq:persist}\\
+\text{Calibrated persistence:}\quad & \hat\Phi_T=a+b\Phi_K, \label{eq:calpersist}\\
 \text{Slope extrapolation:}\quad & \hat\Phi_T=\Phi_K+\hat{\beta}_K\,(T-K). \label{eq:extrap}
 \end{align}
-Neither is fitted to anything. Any learned forecaster that consumes $\Phi_K$ must beat
-\eqref{eq:persist} to have demonstrated that it learned something beyond the fact that
-forgetting curves keep going.
+The coefficients $(a,b)$ in Eq.~\eqref{eq:calpersist} are fitted only on the $15$
+training datasets in each outer fold; raw persistence and slope extrapolation have no
+fitted parameters. A forecaster that consumes $\Phi_K$ must beat calibrated persistence,
+not merely Eq.~\eqref{eq:persist}, to show that its additional inputs contribute.
 
 Scores are mean absolute error, Spearman rank correlation, and
 $R^2=1-\sum(\hat\Phi-\Phi)^2/\sum(\Phi-\bar\Phi)^2$, all computed over the pooled
@@ -357,8 +360,8 @@ identity line, with no systematic family bias.
 \begin{table}[t]
 \centering
 \caption{Leave-one-dataset-out forecasting of final forgetting $\Phi_{20}$, $K=5$.
-Rows above the rule are fitted models; rows below are model-free controls that consume
-no training data at all. Best fitted $R^2$ in bold.}
+Rows above the rule are full fitted models; rows below isolate trajectory persistence.
+Best $R^2$ in bold.}
 \label{tab:main}
 \begin{tabular}{llrrr}
 \toprule
@@ -377,8 +380,9 @@ Inputs & Estimator & MAE & Spearman $\rho$ & $R^2$\\
  & LSTM           & 0.038 & 0.878 & 0.812\\
  & MLP            & 0.113 & 0.481 & $-0.660$\\
 \midrule
-\multirow{2}{*}{control}
+\multirow{3}{*}{control}
  & Persistence, Eq.~\eqref{eq:persist}        & 0.034 & 0.945 & 0.848\\
+ & Calibrated persistence, Eq.~\eqref{eq:calpersist} & 0.026 & 0.936 & \textbf{0.919}\\
  & Slope extrap., Eq.~\eqref{eq:extrap}       & 0.133 & 0.634 & $-2.281$\\
 \bottomrule
 \end{tabular}
@@ -395,20 +399,43 @@ held-out run.}
 \label{fig:quality}
 \end{figure}
 
-\subsection{The persistence control changes the interpretation}
+\subsection{Calibration changes the interpretation}
 Read without a control, \cref{tab:main} tells a strong story: watching five of twenty
 epochs more than doubles $R^2$. The persistence control reframes it. The rule
 ``final forgetting equals forgetting at epoch $5$'' attains $R^2=0.848$, MAE $0.034$,
 and---strikingly---the \emph{highest} rank correlation in the entire table,
-$\rho=0.945$. The best learned forecaster improves $R^2$ by $0.069$ and MAE by $0.009$,
-and is actually \emph{worse} at ranking which dataset will forget most.
+$\rho=0.945$. A linear calibration fitted inside each training fold raises this to
+$R^2=0.919$ and MAE $0.026$, matching gradient boosting ($R^2=0.917$, MAE $0.025$).
 
-This is not a negative result about the study; it is a precise localisation of what the
-learned model contributes. Persistence systematically underestimates, because $\Phi_t$
-is still rising at $t=5$. The learned models supply the missing magnitude correction,
-which is exactly the kind of calibration a regression can learn from $45$ neighbouring
-runs. What they do not supply is new information about the \emph{ordering} of datasets,
-which the warm-up already encodes.
+Raw persistence systematically underestimates because $\Phi_t$ is still rising at
+$t=5$. The magnitude correction can be supplied by a two-parameter regression on
+$\Phi_5$ alone; this dataset therefore provides no evidence that the other trajectory
+measurements add predictive value. In a $10{,}000$-resample dataset-cluster bootstrap,
+gradient boosting has MAE $95\%$ CI $[0.0200,0.0296]$ and calibrated persistence
+$[0.0204,0.0309]$. Their paired MAE difference is $-0.0008$ with CI
+$[-0.0065,0.0047]$. We use ``predictive information'' descriptively, not as a claim of
+statistical significance in the signal-detection sense.
+
+\begin{table}[t]
+\centering
+\caption{Leave-one-dataset-out performance by encoder learning rate at $K=5$.}
+\label{tab:lr}
+\begin{tabular}{llrr}
+\toprule
+$\eta$ & Forecaster & MAE & $R^2$\\
+\midrule
+\multirow{3}{*}{$10^{-6}$} & Grad.\ boosting & 0.020 & 0.478\\
+ & Calibrated persistence & 0.018 & 0.639\\
+ & Raw persistence & 0.023 & 0.278\\
+\multirow{3}{*}{$5\!\times\!10^{-6}$} & Grad.\ boosting & 0.027 & 0.798\\
+ & Calibrated persistence & 0.028 & 0.797\\
+ & Raw persistence & 0.034 & 0.678\\
+\multirow{3}{*}{$10^{-5}$} & Grad.\ boosting & 0.027 & 0.855\\
+ & Calibrated persistence & 0.031 & 0.837\\
+ & Raw persistence & 0.044 & 0.654\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 Slope extrapolation, Eq.~\eqref{eq:extrap}, fails badly ($R^2=-2.281$). Because the
 forgetting curves are concave, linearly continuing the early slope massively
@@ -418,7 +445,7 @@ hand-crafted rule can be far worse than either the naive rule or the learned one
 
 \subsection{How early is early enough?}
 \cref{fig:warmup} sweeps the warm-up length $K$ and re-runs the entire evaluation at
-each value, including both controls. Three regimes are visible.
+each value, including the two model-free controls. Three regimes are visible.
 
 \begin{figure}[t]
 \centering
@@ -437,9 +464,9 @@ For $6\le K\le10$ the two curves interleave within $\pm0.03$ and neither dominat
 $K\ge11$ both exceed $R^2=0.96$ and the forecasting problem has essentially dissolved:
 by then the curve has nearly saturated, so predicting the endpoint is close to reading it.
 
-The practical recommendation follows directly. If the goal is an early-abort signal, use
-$K\approx5$ and use a fitted model, because that is where fitting pays. If $K$ can be
-larger, do not bother fitting anything.
+The practical recommendation is correspondingly conservative. If the goal is an
+early-abort estimate, use $K\approx5$ and calibrate $\Phi_K$ within the deployment
+domain. The present data do not justify preferring the higher-dimensional forecaster.
 
 \subsection{Small samples punish flexible models}
 The MLP is worse than predicting the mean in both feature settings
@@ -456,20 +483,22 @@ row count, supports it.
 \begin{enumerate}
 \item Final forgetting varies by more than a factor of four across datasets and learning
       rates in this campaign ($\Phi_{20}$ from $0.089$ to $0.382$ at $\eta=10^{-5}$).
-\item Early training dynamics carry substantially more forecast signal than the four
-      static descriptors: $R^2$ rises from $0.43$ to $0.92$ under leave-one-dataset-out
-      evaluation.
-\item \emph{Most of that signal is persistence.} A zero-parameter rule reaches
-      $R^2=0.85$ and the best rank correlation observed. The learned contribution is a
-      magnitude correction worth $\approx0.07$ $R^2$, concentrated at $K\le5$.
+\item Early training dynamics carry substantially more predictive information than the
+      four dataset descriptors plus learning rate: $R^2$ rises from $0.43$ to $0.92$
+      under leave-one-dataset-out evaluation.
+\item \emph{Most of that information is persistence.} A zero-parameter rule reaches
+      $R^2=0.85$, and its fold-local linear calibration reaches $R^2=0.919$.
 \item Simple regularised estimators dominate an MLP and an LSTM at this sample size.
 \end{enumerate}
 
 \subsection{Threats to validity}
 The independent unit is a dataset, so the effective sample size for a generalisation
 claim is $16$, not $48$; second and third decimal places in \cref{tab:main} are not
-stable evidence. The campaign uses one architecture, one optimiser, one prompt template,
-and one run per configuration, with no seed replication, so run-to-run variance is
+stable evidence. Each zero-shot benchmark uses a fixed $1{,}500$-image subset chosen
+with seed $42$ and reused at every epoch. Its finite-sample accuracy uncertainty is on
+the order of $0.005$--$0.013$ per benchmark, so differences of a few thousandths in
+$\Phi$ should not be overinterpreted. The campaign uses one architecture, one optimiser,
+one prompt template, and one run per configuration, so run-to-run variance is
 unmeasured and is confounded with between-dataset variance. The three general benchmarks
 in $\mathcal{B}$ are all small natural-image classification sets, so $\Phi$ measures loss
 of one particular kind of general competence rather than of general competence as such.
@@ -481,26 +510,27 @@ static predictors.
 The decisive next experiment is not a better forecaster but a broader campaign:
 multiple seeds per configuration, at least two architectures, and at least two
 fine-tuning recipes (full fine-tuning versus parameter-efficient adaptation), evaluated
-against the persistence control of Eq.~\eqref{eq:persist} at every warm-up length. We
+against both Eqs.~\eqref{eq:persist} and \eqref{eq:calpersist} at every warm-up length. We
 would also expect a genuinely stronger forecaster to use the drift signals
 \eqref{eq:pdrift}--\eqref{eq:edrift} to \emph{anticipate} the saturation point rather
 than to regress on the current level; that is the capability persistence provably lacks
 and which no model here demonstrably achieved.
 
 \section{Conclusion}
-Watching the first five epochs of a CLIP fine-tuning run forecasts its final forgetting
-with $R^2=0.92$ on datasets the forecaster has never seen, more than doubling what
-pre-training descriptors achieve alone. But a rule that simply asserts the forgetting
-will not change reaches $R^2=0.85$ and ranks datasets better. The honest headline is
-therefore narrower and more useful than the raw ablation suggests: early dynamics
-forecast forgetting mainly because forgetting curves persist, and the value a fitted
-model adds is a calibrated magnitude correction in the short-warm-up regime where an
-early abort is still worth making.
+Watching the first five epochs of a CLIP fine-tuning run predicts final forgetting with
+$R^2\approx0.92$ on held-out datasets, more than doubling what dataset descriptors and
+learning rate achieve alone. However, a fold-local linear calibration of $\Phi_5$ alone
+matches the full gradient-boosting forecaster within dataset-level uncertainty. The
+supported conclusion is that early forgetting persists and is calibratable; this study
+does not demonstrate incremental value from the additional drift and loss measurements.
 
 \section*{Reproducibility}
 The campaign generator (\texttt{trajectory\_dynamics.py}), the evaluation module
-(\texttt{forecasting.py}), the cached per-epoch logs, and the figure and table scripts
-accompanying this manuscript regenerate every number reported here in seconds on a CPU.
+(\texttt{forecasting.py}), cached per-epoch logs, and figure and table scripts are
+available at \url{https://github.com/guptaishaan/research-projects/tree/icaise-2026-format/clip_forgetting_forecasting}.
+They fix the prompt, subsets, seeds, optimiser settings, and probe construction; the
+provided requirements file records the software environment. Forecasting analyses
+regenerate in seconds on a CPU.
 Rebuilding the campaign from scratch requires a few GPU-hours via
 \begin{verbatim}
 python trajectory_dynamics.py --epochs 20 --train-n 4000 \

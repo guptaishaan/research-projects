@@ -109,10 +109,11 @@ while the fully readable linear model reaches $\mathrm{AUC}=0.946$ at
 $\mathcal{A}=0.999$---a $0.029$ AUC premium for near-total transparency. We then
 introduce a physics-informed Kolmogorov--Arnold network that predicts transit parameters
 and is trained \emph{only} to reconstruct the observed flux through a differentiable
-Mandel--Agol forward model, never seeing a radius label. It attains
+annular approximation to the Mandel--Agol forward model, never seeing a radius label. It attains
 $\mathrm{MAE}=0.0100$ in $R_p/R_*$, within $24\%$ of the best fully supervised model,
-and occupies a distinct region of the Pareto plane. Applied zero-shot to twelve
-confirmed Kepler planets it recovers radii with full-sample $\mathrm{MAE}=0.023$. We
+and occupies a distinct region of the Pareto plane under matched simulation. Applied
+zero-shot to twelve confirmed Kepler planets it recovers radii with full-sample
+$\mathrm{MAE}=0.023$, a feasibility result rather than a reliability estimate. We
 report that full-sample figure as the primary real-data result and show that the
 label-free reconstruction-residual screen used to identify model mismatch improves it
 only to $0.018$---and rejects one fold whose radius was in fact recovered to within
@@ -169,8 +170,9 @@ This paper studies both halves, and studies them along two axes.
 
 \subsection{Transit physics}
 For a planet of radius ratio $\rho=R_p/R_*$ on a circular orbit of scaled semi-major
-axis $a/R_*$ and impact parameter $b$, the projected star--planet separation at orbital
-phase $\phi$ is
+axis $a/R_*$ and impact parameter $b$, define phase as
+$\phi=(t-t_0)/P$, with the simulation period normalised to $P=1$. The projected
+star--planet separation is
 \begin{equation}
 d(\phi)=\sqrt{\left(\frac{a}{R_*}\right)^{\!2}\sin^{2}(2\pi\phi)+b^{2}\cos^{2}(2\pi\phi)} .
 \label{eq:sep}
@@ -193,6 +195,8 @@ F(\phi)\;=\;1-\frac{\displaystyle\sum_{k=1}^{N_r} I_k\left[\mathcal{O}(d(\phi),R
 Equation~\eqref{eq:flux} is differentiable in $(\rho,b,a/R_*,t_0)$, which is what makes
 the physics-informed estimator of \cref{sec:physkan} trainable. The reference
 implementation is validated against \texttt{batman}~\cite{kreidberg2015batman}.
+For $500$ parameter draws, its maximum/mean absolute discrepancies and RMSE relative to
+\texttt{batman} are $5.53\times10^{-6}$/$1.53\times10^{-7}$/$5.50\times10^{-7}$.
 \cref{fig:shapes} shows how each parameter reshapes the dip.
 
 \begin{figure}[t]
@@ -219,7 +223,9 @@ merely ``something changed''. The transit signal-to-noise ratio is
 \label{eq:snr}
 \end{equation}
 with $n_{\mathrm{in}}$ the number of in-transit samples implied by the analytic
-duration. The training set holds $8{,}000$ segments ($4{,}006$ positive), the disjoint
+duration. This is a simulation-specific white-noise proxy, not a claim about survey
+detection completeness under correlated noise or systematics. The training set holds
+$8{,}000$ segments ($4{,}006$ positive), the disjoint
 test set $3{,}000$ ($1{,}483$ positive).
 
 Preprocessing differs by task, and the difference is substantive. For detection each
@@ -249,8 +255,17 @@ g(\mathbf{x})=\sum_{j=1}^{L}\psi_j(x_j),
 \label{eq:kan}
 \end{equation}
 which is a generalised additive model~\cite{hastie1990gam} with learned shape functions.
-After training, $\psi_j$ can simply be plotted: the model's dependence on each phase bin
-is read off directly, with no post-hoc approximation~\cite{ribeiro2016lime}.
+This describes the single-layer $[201,1]$ KAN ($5{,}632$ parameters; cubic splines,
+grid $5$). The physics-KAN is a two-layer $[201,8,4]$ model ($28{,}796$ parameters), not
+a GAM; it is assessed by surrogate fidelity. Only the single-layer KAN's $\psi_j$ are
+directly plotted without post-hoc approximation~\cite{ribeiro2016lime}.
+
+The MLP/CNN/LSTM have $34{,}177$/$3{,}233$/$9{,}025$ parameters and train for
+$30$/$30$/$18$ epochs at $10^{-3}$; the single-layer and physics KANs train for $40$ at
+$5\times10^{-3}$ and $80$ at $3\times10^{-3}$ (batch $256$). Forest/XGBoost use $200$
+trees (XGBoost depth $4$), and ridge $\alpha=1$. Settings were fixed a priori without
+tuning or compute matching. The physics-KAN also evaluates $128$ annuli per batch;
+wall-clock times were not logged.
 
 \subsection{Additive-surrogate fidelity}
 Interpretability has no canonical scalar. We therefore measure one specific, well-defined
@@ -324,6 +339,12 @@ and compared against the true mean transit template; in the source study that
 comparison yields a correlation of $0.94$, i.e.\ the KAN independently rediscovered the
 transit shape rather than latching onto an artefact.
 
+As a limited optimisation-variance check, we retrained the leading MLP with five seeds
+on the same split. Test AUC is $0.9751\pm0.0009$ (sample SD), with range
+$[0.9736,0.9757]$; its $0.029$ gap from the linear model is therefore much larger than
+the observed MLP seed variation. Other families and the physics-KAN were not replicated,
+so their pairwise differences remain single-seed results.
+
 \section{Task 2: Characterisation}
 \label{sec:physkan}
 
@@ -346,9 +367,18 @@ those parameters are pushed through the differentiable forward model
 \label{eq:physloss}
 \end{equation}
 where $o_{ij}$ is the median-subtracted observed flux. No radius label appears anywhere
-in \eqref{eq:physloss}. The network must infer $\rho$ because $\rho$ is the only way to
-reproduce the observed depth---the same inverse-problem logic that underlies
+in \eqref{eq:physloss}. Radius strongly controls depth, but it is not uniquely
+identifiable from depth: $\rho$, $b$, $a/R_*$, limb darkening, and $t_0$ jointly shape
+depth, duration, and ingress. The bounded joint fit exploits all $201$ samples, while
+remaining subject to these degeneracies---the same inverse-problem logic that underlies
 physics-informed neural networks~\cite{raissi2019pinn}.
+
+A finite-difference Jacobian check quantifies this coupling: range-scaled median RMS
+flux sensitivities over $200$ curves are $0.00618$ ($\rho$), $0.00261$ ($b$), $0.00303$
+($a/R_*$), and $0.00819$ ($t_0$). With geometry known, fitting $\rho$ while assuming
+$(u_1,u_2)=(0.3,0.2)$ gives MAE $0.00194$ for true $(0.1,0.1)$ and $0.00240$ for true
+$(0.5,0.3)$ over $120$ curves (maxima $0.00855$/$0.01095$). Unknown geometry can add
+error, so these are diagnostics, not robustness guarantees.
 
 \subsection{Results}
 \cref{tab:regression} and \cref{fig:leaderboards}(b) give the leaderboard. The best
@@ -396,7 +426,7 @@ observations follow.
 \caption{Accuracy against additive-surrogate fidelity. Stars mark directly readable
 models, circles black boxes; the dashed line is the Pareto frontier. On detection (a) the
 frontier is short and the cost of transparency is $0.029$ AUC. On characterisation (b) the
-frontier is long: full readability costs $40\%$ higher error than the best black box,
+frontier is long: full readability costs $85\%$ higher error than the best black box,
 while the physics-informed model occupies an intermediate position.}
 \label{fig:pareto}
 \end{figure}
@@ -502,9 +532,9 @@ rejected cases separately, as we have done here.
 \item A differentiable transit model permits training a radius estimator by
       reconstruction alone, within $24\%$ of fully supervised accuracy and far ahead of
       supervised readable models.
-\item Zero-shot transfer to real Kepler folds succeeds qualitatively
-      ($\mathrm{MAE}=0.023$) and fails in a physically interpretable direction, namely
-      underestimation of deep transits under long-cadence smearing.
+\item Zero-shot transfer to twelve real Kepler folds is feasible
+      ($\mathrm{MAE}=0.023$) but is not evidence of population-level reliability; its
+      dominant error is underestimation of deep transits under long-cadence smearing.
 \item Reconstruction residual is a poor proxy for parameter accuracy and should not be
       used as a post-hoc accuracy filter.
 \end{enumerate}
@@ -513,41 +543,36 @@ rejected cases separately, as we have done here.
 Training and test simulations share a generator, parameter ranges, and noise model, so
 synthetic scores measure interpolation within a known family rather than robustness to
 unmodelled systematics. The physics-informed model enjoys a matched-model advantage: its
-decoder is the very process that generated the synthetic data, and the Kepler results
-show how much of that advantage survives when the match is broken. Additive-surrogate
+decoder is the very process that generated the synthetic data. The limb-darkening
+sensitivity check and Kepler results show how accuracy degrades when that match is
+broken, but do not span realistic mismatch. Additive-surrogate
 fidelity captures one dimension of interpretability and is measured on a probe
 distribution drawn from the same simulator. Twelve planets is a demonstration, not a
 population estimate, and the sample is biased towards well-characterised systems.
-Finally, no result is repeated across training seeds, so the reported differences carry
-unquantified optimisation variance; differences smaller than roughly $0.005$ AUC or
-$0.0005$ in MAE should not be treated as meaningful.
+Only the MLP detection result is repeated across five seeds; all other training results
+carry unquantified optimisation variance, so close pairwise differences should not be
+treated as meaningful.
 
 \subsection{Future work}
-The most informative next experiment is a mismatch study: train on the current simulator
-and test under correlated noise, unmodelled limb darkening, and explicit long-cadence
-integration, which \cref{fig:kepler} identifies as the dominant real-data error source.
-Adding the integration kernel to Eq.~\eqref{eq:flux} is straightforward and should
-directly address the deep-transit bias. Extending to TESS data~\cite{ricker2015tess} and
-to the single-transit regime, where folding is unavailable and physics-informed
-inference should have its largest relative advantage~\cite{foremanmackey2016}, would test
-the approach where it matters most.
+The next experiment should test the current model under correlated noise, limb-darkening
+mismatch, and long-cadence integration; adding the latter to Eq.~\eqref{eq:flux} should
+address the deep-transit bias in \cref{fig:kepler}. TESS~\cite{ricker2015tess} and
+single-transit data~\cite{foremanmackey2016} would then test broader transfer.
 
 \section{Conclusion}
-On simulated transits, the most accurate detector is opaque and the most transparent one
-gives up $0.029$ AUC; on radius measurement the same transparency costs $85\%$ more
-error. There is no single best model, and the choice depends on whether raw performance
-or a checkable explanation matters more for the scientific question at hand. Between
-those poles sits a third option that the two-axis framing does not capture: a
-physics-informed estimator that reaches near-supervised accuracy using no parameter
-labels at all, and whose errors on real data are interpretable as a specific,
-correctable mismatch between the assumed forward model and the instrument.
+On simulated transits, full transparency costs $0.029$ detection AUC and $85\%$ more
+radius error. A physics-informed alternative reaches near-supervised accuracy without
+parameter labels under matched simulation. Its twelve-planet transfer is a feasibility
+check that exposes instrument mismatch, not a validated catalogue-level estimator.
 
 \section*{Reproducibility}
-The figure script accompanying this manuscript regenerates every figure and table,
-including the forward model of Eq.~\eqref{eq:flux} and the label-free residual screen,
-from the transcribed leaderboards and the embedded twelve-planet Kepler sample. The
-source notebook validates the differentiable forward model against
-\texttt{batman}~\cite{kreidberg2015batman} and fixes all data-generation seeds.
+Code, notebooks, and fixed inputs are in the
+\href{https://github.com/guptaishaan/research-projects/tree/icaise-2026-format/exoplanet-model-comparison}{public repository}.
+The figure script regenerates the figures, tables, and residual screen; the notebook
+validates Eq.~\eqref{eq:flux} against
+\texttt{batman}~\cite{kreidberg2015batman} and fixes all data-generation seeds. Committed
+outputs used NumPy 2.5.1, pandas 2.3.3, Matplotlib 3.11.0, scikit-learn 1.9.0,
+XGBoost 2.1.4, PyTorch 2.6.0+cu124, \texttt{batman} 2.5.3, and pykan 0.2.8.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}

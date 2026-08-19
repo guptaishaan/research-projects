@@ -11,8 +11,8 @@
 \begin{document}
 
 \title{The Control Is the Instrument}
-\subtitle{Calibrating Perturbation Tests Used to Prove That EEG Decoders Read
-the Brain}
+\subtitle{Calibrating Perturbation Tests Used as Evidence That EEG Decoders Read
+Neural Signal}
 
 \author{Isha Gupta}
 \equalcontrib
@@ -97,16 +97,18 @@ is planted by construction, we measure each control's catch rate and false-alarm
 across a grid of conditions and four decoder families. The reliability of a control
 turns out to depend on the decoder, not just on the control. Averaged over probes,
 EEGNet's false-alarm rate is $1.3\%$ while band-power's is $68.8\%$: on the same
-simulated data, with the same perturbations, the identical evidence is decisive for one
-decoder and near-worthless for another. A random forest reading exactly the same
+tested simulator grid, the identical evidence has sharply different reliability across
+decoders. These full-grid rates are descriptive because each condition has one generated
+dataset. In a separate $30$-dataset replication of the minimal comparison, conclusions
+are unchanged for firing thresholds $0.05$--$0.20$. A random forest reading exactly the same
 features as a band-power linear model cuts spatial false alarms roughly in half while
-remaining equally fooled by band perturbations, showing the failure is jointly a property
-of the feature representation and the model class. Applying the calibrated battery to
-real PhysioNet decoders yields opposite trust verdicts for EEGNet and band-power on
-identical data. Finally, we grade the controls on real brains using eyes-open versus
+remaining equally fooled by band perturbations, implicating both representation and
+model class without identifying their interaction. Applying decoder-specific calibration
+to real PhysioNet drops changes their evidential weight. Finally, we grade the controls
+on real brains using eyes-open versus
 eyes-closed, a task whose occipital-alpha ground truth is fixed by physiology: band-power
-false-alarms on three of four controls whose targets are absent and CSP on two, exactly
-as the simulator predicted.
+false alarms on three of four controls whose targets are absent and CSP on two,
+corroborating the specificity warning without establishing motor-imagery ground truth.
 \end{abstract}
 
 \ccsdesc[500]{Applied computing~Life and medical sciences}
@@ -153,14 +155,13 @@ controls in BCI have not received the same scrutiny.
       operating characteristics for band and spatial controls across four decoder
       families.
 \item The central empirical finding that control reliability is
-      \emph{decoder-conditional}, with a factor of $50$ separating the best and worst
-      false-alarm rates on identical data, plus a controlled dissociation isolating how
-      much of the failure is due to features and how much to model class.
-\item A calibrated audit of real PhysioNet decoders that reaches opposite trust verdicts
-      for EEGNet and band-power on the same recordings.
+      \emph{decoder-conditional}, with large descriptive differences on identical data,
+      plus controlled contrasts that vary feature scope and model class.
+\item A descriptive audit showing that the same PhysioNet accuracy drops receive
+      different evidential weight after decoder-specific calibration.
 \item A real-brain validation on eyes-open/eyes-closed, a task whose ground truth is
-      fixed by physiology, confirming the simulator's specificity warning outside
-      simulation.
+      fixed by physiology, corroborating the simulator's specificity warning outside
+      simulation while leaving motor-imagery ground truth unresolved.
 \end{enumerate}
 
 \section{A Simulator with Operational Ground Truth}
@@ -168,12 +169,20 @@ controls in BCI have not received the same scrutiny.
 \subsection{Generative model}
 Each trial is a matrix $X\in\mathbb{R}^{C\times T}$ with $C=19$ electrodes at $F_s=128$
 Hz over $T=256$ samples ($2$ s). The background is per-channel pink noise, matching the
-$1/f$ character of real EEG~\cite{sanei2007}: with $\tilde{n}_c(f)$ complex Gaussian,
+$1/f$ character of real EEG~\cite{sanei2007}. For real-FFT bins
+$k=0,\ldots,T/2$, let $f_k=kF_s/T$, draw $A_{ck},B_{ck}\stackrel{\mathrm{iid}}{\sim}
+\mathcal{N}(0,1)$, and define
 \begin{equation}
-n_c(t) = \mathcal{F}^{-1}\!\left\{\tilde{n}_c(f)\,f^{-1/2}\right\}(t),
-\qquad n_c \leftarrow n_c/\operatorname{std}(n_c).
+Z_{ck}=(A_{ck}+iB_{ck})q_k,\qquad
+q_0=1,\quad q_k=f_k^{-1/2}\ (k>0),\qquad
+n_c=\operatorname{irfft}(Z_c),\quad
+n_c\leftarrow\frac{n_c}{\operatorname{std}(n_c)+10^{-9}}.
 \label{eq:pink}
 \end{equation}
+The inverse real FFT supplies the conjugate negative-frequency bins; its DC and Nyquist
+bins are real (equivalently, their imaginary parts are discarded). Thus the DC term is
+finite rather than divided by zero, and each output channel is normalised to unit sample
+standard deviation without an additional mean-subtraction step.
 The planted signal is a windowed $10$ Hz $\mu$ burst added only to the motor channels
 contralateral to the imagined hand,
 \begin{equation}
@@ -210,6 +219,15 @@ That is exactly the knowledge real data cannot supply, and it is the minimum nee
 measure a false-alarm rate at all. \cref{sec:realbrain} addresses how far the resulting
 calibration transfers.
 
+The construction is deliberately easier than biological EEG: background channels are
+independent, the carrier is fixed at $10$ Hz, amplitude and onset are constant, and no
+volume conduction or artefact process is simulated. Spatial correlation could make a
+regional ablation less specific; frequency jitter could spread a true dependence across
+bands; and amplitude or onset variation could reduce sensitivity. Absolute rates should
+therefore be re-estimated under correlated noise, jitter, and temporal variability
+before transfer to another pipeline. The present simulator tests calibration logic, not
+biophysical realism.
+
 \section{Controls and Their Operating Characteristics}
 
 \subsection{Definitions}
@@ -237,6 +255,9 @@ Over repeated datasets we estimate the two rates that define the instrument,
 \end{align}
 A control is trustworthy for a given decoder only when \eqref{eq:sens} is high
 \emph{and} \eqref{eq:fa} is low \emph{for that decoder}.
+The $0.10$ cutoff was fixed before evaluation as a practically conspicuous ten-point
+accuracy loss; it is an operating choice, not a physiological constant. We therefore
+report its sensitivity below rather than treating it as uniquely correct.
 
 \subsection{A minimal dissociation}
 Before the full grid, one controlled comparison isolates the mechanism. We plant the
@@ -271,13 +292,48 @@ zeroing an unused band or region leaves its decision path untouched. Since \text
 and \textsc{Tree} consume identical inputs, the difference cannot be attributed to what
 the decoder can see. Same information, different model class, opposite reliability.
 
+\subsection{Threshold and data-generation sensitivity}
+We repeated the minimal experiment on $30$ independently generated train/test datasets
+(seeds $1000$--$1029$) and swept $\tau\in\{0.05,0.10,0.15,0.20\}$. \cref{tab:tau}
+shows that the qualitative result is threshold-invariant in this range. Each rate pools
+the two present-target or two absent-target controls. For \textsc{Broad}, a
+dataset-cluster bootstrap gives false-alarm CI $[0.867,0.983]$; for the zero rates, the
+dataset-level Wilson upper bound is $0.114$, and unit sensitivity has lower bound
+$0.886$. These intervals quantify independent data-generation variability, unlike
+retraining the same dataset.
+
+\begin{table}[t]
+\centering
+\caption{Minimal $19$-channel replication over $30$ independent datasets. FA denotes
+false-alarm rate; sensitivity is $1.00$ for all three decoders at every threshold.}
+\label{tab:tau}
+\begin{tabular}{rrrr}
+\toprule
+$\tau$ & \textsc{Broad} FA & \textsc{Focused} FA & \textsc{Tree} FA\\
+\midrule
+0.05 & 0.933 & 0.000 & 0.000\\
+0.10 & 0.933 & 0.000 & 0.000\\
+0.15 & 0.933 & 0.000 & 0.000\\
+0.20 & 0.933 & 0.000 & 0.000\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Measured operating characteristics at scale}
-The full study sweeps $50$ ground-truth conditions (rhythm $\times$ region $\times$
-strength $\times$ confound $\times$ two signal types), each with five network
-retrainings, on a $64$-channel montage, across four decoder families: band-power with
-logistic regression, CSP with LDA~\cite{ramoser2000csp}, a random forest, and
-EEGNet~\cite{lawhern2018eegnet}. A control is graded on a decoder only if that decoder
-cleared a decodability floor on the planted signal. \cref{fig:oc} reports the result.
+The $19$-channel experiment isolates a mechanism with small named region masks. The full
+study expands the same pink-noise and region-specific injection scheme to a standard
+$64$-channel montage, mapping motor and occipital masks to their homologous electrodes,
+and sweeps $50$ conditions (rhythm $\times$ region $\times$ strength $\times$ confound
+$\times$ two signal types). It uses one generated dataset per condition and five model
+retrainings on that dataset. Thus retraining variation measures optimisation or resampling
+variation, not data-generation uncertainty.
+
+The four families span distinct representations: band-power/logistic regression is a
+hand-engineered linear spectral model; CSP/LDA learns supervised spatial filters followed
+by a linear rule~\cite{ramoser2000csp}; the forest supplies nonlinear interactions over
+engineered features; and EEGNet learns compact temporal and spatial convolutions directly
+from trials~\cite{lawhern2018eegnet}. A control is graded only after its decoder clears a
+decodability floor. \cref{fig:oc} reports the result.
 
 \begin{figure}[t]
 \centering
@@ -292,9 +348,10 @@ perturbations whose targets are absent; EEGNet essentially never does.}
 Sensitivity is uninformative---every cell is $83$--$100\%$, so every control detects
 real dependence. The discrimination is entirely in the false-alarm panel. Averaged over
 probes, the false-alarm rates are $68.8\%$ for band-power, $63.0\%$ for the tree,
-$24.7\%$ for CSP, and $1.3\%$ for EEGNet. A ``remove $\mu$'' result that fires is thus
-near-conclusive for EEGNet and close to uninformative for band-power, on identical data
-with an identical perturbation.
+$24.7\%$ for CSP, and $1.3\%$ for EEGNet. Because the full grid does not independently
+regenerate each condition, these are descriptive rates without data-generation confidence
+intervals. They show strong decoder dependence in the tested configuration but should not
+be exported as universal constants or a universal factor-of-$50$ contrast.
 
 The tree's position is instructive and refines the toy conclusion. At scale the random
 forest does \emph{not} inherit the toy \textsc{Tree}'s immunity: it halves band-power's
@@ -302,8 +359,11 @@ occipital false alarms ($33\%$ versus $67\%$) but matches or exceeds it on band 
 ($75\%$ on remove $\mu$, $83\%$ on remove $\beta$). Selectivity in the splitting rule
 protects against spatial ablation, where irrelevant channels are simply never split on,
 but not against band ablation, which corrupts the very features the tree does use. The
-failure is therefore jointly attributable to the feature representation and the model
-class, and neither alone predicts reliability.
+failure therefore involves both feature representation and model class. The comparison
+is only a partial factorial design: \textsc{Focused} versus \textsc{Broad} varies feature
+scope within a linear model, and \textsc{Broad} versus \textsc{Tree} varies model class
+at fixed features, but a focused-feature tree is absent. A complete representation
+$\times$ model-class factorial is required to estimate their interaction.
 
 \section{Auditing Real Decoders}
 We now apply the calibrated battery to decoders trained on PhysioNet
@@ -312,6 +372,11 @@ evaluation---every subject a decoder is tested on is one it never trained on. Al
 real decoders clear the decodability floor (\cref{fig:audit}(b)); the BCI Competition
 IV-2a set~\cite{tangermann2012bci} is excluded from the audit because nine participants
 render its test underpowered, which is a limitation rather than a result.
+The simulator cutoff in Eq.~\eqref{eq:fire} defines event rates; the real audit retains
+continuous drops and attaches the corresponding decoder/control reliability rather than
+reapplying $\tau$. Population inference must use participants, not trials, as the unit.
+Only aggregate held-out accuracies were retained, so participant-level confidence
+intervals cannot be reconstructed and the real-data comparison remains descriptive.
 
 \begin{figure}[t]
 \centering
@@ -324,13 +389,13 @@ all decoders read motor imagery above chance.}
 \label{fig:audit}
 \end{figure}
 
-The verdicts are the paper's practical payoff. Every one of the four controls fires on
-band-power with drops of $0.03$--$0.08$, and \emph{none} of those firings is informative,
+The verdicts are the paper's practical payoff. The four controls produce band-power
+drops of $0.03$--$0.08$, and \emph{none} is informative,
 because band-power's measured false-alarm rate on each is $67$--$83\%$. The same four
-controls applied to EEGNet yield drops of $0.01$--$0.09$ that are fully interpretable:
-EEGNet depends on $\mu$ and on sensorimotor channels and does \emph{not} depend on
-$\beta$ or on occipital channels---four decisive conclusions, because EEGNet's
-false-alarm rate is near zero. CSP is intermediate, trustworthy on the band controls and
+controls applied to EEGNet yield drops of $0.01$--$0.09$ with much lower measured false alarms:
+the pattern is consistent with dependence on $\mu$ and sensorimotor channels but not
+$\beta$ or occipital channels---four configuration-specific indications, because EEGNet's
+false-alarm rate is near zero in the tested grid. CSP is intermediate, trustworthy on the band controls and
 suspect on both spatial ones.
 
 An uncalibrated report of the same experiment would have listed eight accuracy drops of
@@ -373,10 +438,10 @@ the magnitude of a drop carries no information about whether the target was real
 false-alarmed on both spatial controls, with a frontal drop ($+0.36$) equal to its true
 occipital one.
 
-This is the simulator-to-real bridge. The specificity failure predicted from planted
-ground truth appears, in the same form and on the same decoder families, on real human
-EEG in a task where the answer is independently known. The caution is not a simulation
-artefact. We note the natural confound---volume conduction spreads occipital alpha to
+This is a limited simulator-to-real bridge. It corroborates the specificity warning on
+a separate task whose physiology is independently known; it does not establish the same
+ground truth for motor imagery or validate the numerical simulator rates on real data.
+We note the natural confound---volume conduction spreads occipital alpha to
 distant electrodes~\cite{nunez2006}---and observe that it strengthens rather than weakens
 the conclusion: a control that fires because of field spread is exactly a control that
 cannot localise the signal it claims to localise.
@@ -385,29 +450,31 @@ cannot localise the signal it claims to localise.
 
 \subsection{What the study establishes}
 \begin{enumerate}
-\item Perturbation controls have measurable operating characteristics, and those
-      characteristics are \emph{decoder-conditional}: false-alarm rates range from
-      $1.3\%$ to $68.8\%$ across decoder families on identical data.
+\item Perturbation controls have measurable, \emph{decoder-conditional} operating
+      characteristics: descriptive full-grid false-alarm
+      rates range from $1.3\%$ to $68.8\%$ on identical simulated data.
 \item Sensitivity is nearly uninformative in this setting; specificity does all the
       discriminating. Studies that report only that a control fired have reported the
       uninformative half.
-\item The failure is jointly a property of features and model class. A tree on identical
-      features resists spatial ablation but not band ablation.
-\item Calibration changes real conclusions: the same battery on the same PhysioNet data
-      yields four trustworthy verdicts for EEGNet and none for band-power.
-\item The specificity warning reproduces on real brains in a task with known physiology.
+\item Controlled contrasts implicate both features and model class, but the incomplete
+      factorial design does not identify their interaction.
+\item Calibration changes how continuous drops are weighted in the descriptive
+      PhysioNet audit; participant-level uncertainty remains unmeasured.
+\item A known-physiology alpha task corroborates the specificity warning, not the motor-imagery ground truth.
 \end{enumerate}
 
 \subsection{What it does not establish}
 Simulated ground truth is operational, not biological, so how completely the measured
 reliabilities transfer to every recording pipeline remains open---this is the study's
-honest crux, not a footnote. Each grid condition currently rests on a single simulated
-draw, so the reliability numbers carry no error bars; multi-draw replication is the
-obvious next step. The real-brain confirmation covers band and region controls on one
-alpha task, not the motor-imagery decoders themselves. Two older datasets, two-class
-motor imagery, and scalp EEG bound the scope, and no claim about cortical causality is
-made anywhere. The unit of inference must also stay explicit: trials estimate a
-subject-specific decoder, whereas subjects support population claims.
+honest crux, not a footnote. The new independent-dataset analysis covers the minimal
+$19$-channel comparison only. Each $64$-channel grid condition still rests on one
+generated dataset, with five retrainings that measure model variability rather than data
+variability; its aggregate rates therefore lack data-generation intervals. Correlated
+spatial noise, frequency jitter, amplitude/onset variation, and a complete
+representation-by-model factorial remain to be tested. The real-brain confirmation
+covers one alpha task, not motor-imagery ground truth. Two older datasets, two-class
+motor imagery, and scalp EEG bound the scope. Trials evaluate a decoder, whereas
+participants support population claims, and no cortical-causality claim is made.
 
 \subsection{Recommendation}
 A perturbation result should not be reported as evidence unless the control's false-alarm
@@ -420,21 +487,23 @@ cheaper than the calibration grid reported here.
 \section{Conclusion}
 Perturbation controls are instruments, and instruments require calibration. We measured
 the sensitivity and false-alarm rate of band and spatial controls against planted ground
-truth and found that the same control, on the same data, supports a decisive conclusion
-for one decoder and none at all for another---a factor of $50$ in false-alarm rate
-between EEGNet and band-power. Applying the calibrated battery to real decoders reverses
-half the conclusions an uncalibrated reading would have drawn, and a real task with known
-physiology confirms the warning outside simulation. The deliverable is not a verdict on
-any particular decoder but a usable instrument: a way to say how much a perturbation
-result is worth, and the finding that the answer depends on what you pointed it at.
+truth and found strong decoder dependence in the tested configurations. The independent
+$19$-channel replication is stable across four thresholds, while the larger grid still
+needs independent dataset replication. Applying calibration to real-decoder drops changes
+their evidential weight, and a known-physiology task corroborates the specificity warning
+without establishing motor-imagery causality. The supported conclusion is methodological:
+perturbation evidence should be calibrated for its decoder and deployment pipeline.
 
 \section*{Reproducibility}
-The accompanying figure script regenerates the simulator panels and the full toy
-calibration live from the generator of \cref{eq:pink,eq:signal} using
-scikit-learn~\cite{pedregosa2011}, and writes every measured operating characteristic,
-audit verdict, and eyes-open/closed drop to CSV. Simulation seeds are fixed, planted
-truth is defined before any control is evaluated, and catch and false-alarm regimes are
-reported separately for each decoder family.
+The accompanying script regenerates the simulator panels and minimal calibration from
+\cref{eq:pink,eq:signal} using scikit-learn~\cite{pedregosa2011}. The original minimal
+study uses dataset seeds $0$--$14$; each seed generates $60$ training and $60$ test
+trials per class, with test seed offset $999$. Logistic models standardise features and
+use 	exttt{max\_iter=1000}; the forest uses $200$ trees and seed $0$; $\tau=0.10$.
+The threshold analysis uses independent seeds $1000$--$1029$, test offset $100{,}000$,
+and $\tau\in\{0.05,0.10,0.15,0.20\}$. CSV files retain aggregate $64$-channel and real
+results, but not the per-retraining full-grid seeds or participant-level scores; this
+prevents reconstruction of those uncertainty estimates and is a reproducibility limitation.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}

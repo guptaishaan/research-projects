@@ -96,9 +96,9 @@
 
 
 \begin{abstract}
-A clinical risk model can appear excellent under internal validation and still fail
-when it is moved to a hospital with a different case mix, different measurement
-practice, and a different missing-data pattern. We quantify that failure mode on the
+A clinical risk model can perform well internally yet transfer poorly to a hospital
+with a different case mix, measurement practice, or missing-data pattern. We study this
+failure mode on the
 four cohorts of the UCI Heart Disease collection (Cleveland, Hungary, Switzerland,
 Long Beach VA; $n=920$ patients). Three model families---$L_2$-penalized logistic
 regression, a random forest, and a compact multilayer perceptron---are first evaluated
@@ -108,12 +108,12 @@ hospital pairs using only the nine variables with genuine coverage at every site
 Imputation and scaling are refitted strictly inside each training boundary, and the
 Swiss cholesterol field---recorded as zero for every Swiss patient---is excluded from
 the portable feature set rather than silently imputed from other hospitals. Internal
-Cleveland discrimination reaches $\mathrm{AUC}=0.910$ for the random forest. Under
-transport, however, the picture is not a uniform degradation but a heterogeneous
-matrix: individual directed pairs range from $\mathrm{AUC}=0.571$ to $0.888$, and the
-random forest attains a \emph{higher} macro-average external AUC ($0.781$) than
-internal AUC ($0.756$), while logistic regression loses $0.028$ AUC and the MLP is
-essentially flat but weaker in absolute terms. We argue that the scalar
+Cleveland discrimination reaches $\mathrm{AUC}=0.910$ for the random forest. Transfer
+performance is heterogeneous: directed pairs range from $\mathrm{AUC}=0.571$ to
+$0.888$. The random forest has macro-average external AUC $0.781$ and internal AUC
+$0.756$; this reflects the populations being averaged and does not imply improvement
+under transfer. Logistic regression has a $0.028$ internal-to-external decrease. The
+MLP changes little but performs worse in absolute terms. We argue that the scalar
 ``generalization gap'' routinely reported in the clinical machine-learning literature
 is an insufficient summary, that source-cohort quality dominates model choice, and
 that external validity should be reported as a transfer matrix accompanied by absolute
@@ -148,9 +148,9 @@ predictor of external behaviour~\cite{steyerberg2016,futoma2020,zech2018}.
 
 The UCI Heart Disease collection~\cite{detrano1989} is unusually well suited to
 studying this because it is not one dataset but four, each collected at a different
-institution with a shared instrument but very different recording discipline. It is
-also small, historical, and imperfect, which makes it a good teaching object and a bad
-basis for clinical claims. We use it accordingly.
+institution with a shared instrument but different recording practices. Its four-site
+structure is useful for demonstrating validation design, but its small, historical
+cohorts cannot support claims about contemporary clinical performance.
 
 \subsection{Contributions}
 \begin{enumerate}
@@ -220,16 +220,35 @@ its source site never measured. We therefore exclude \texttt{chol} from the port
 set entirely---a stricter and more defensible choice.
 
 \subsection{Feature sets}
-Two disjoint estimands are studied, and they use different inputs.
-\begin{itemize}
-\item $\mathcal{F}_{13}$ (internal study): all thirteen predictors, including
-      \texttt{ca}, \texttt{thal}, and \texttt{slope}, which are among the strongest
-      signals but are recorded reliably only at Cleveland.
-\item $\mathcal{F}_{9}$ (transport study): \texttt{age}, \texttt{sex}, \texttt{cp},
-      \texttt{trestbps}, \texttt{fbs}, \texttt{restecg}, \texttt{thalach},
-      \texttt{exang}, \texttt{oldpeak}---the nine variables with genuine coverage at
-      all four sites.
-\end{itemize}
+The internal and transport studies use the predictors listed in \cref{tab:predictors}.
+
+\begin{table}[t]
+\centering
+\caption{Predictors and feature-set membership. $\mathcal{F}_{13}$ is used for internal
+Cleveland validation; $\mathcal{F}_{9}$ contains variables with coverage at all sites.}
+\label{tab:predictors}
+\scriptsize
+\begin{tabular}{@{}lp{0.55\linewidth}cc@{}}
+\toprule
+Code & Predictor & $\mathcal{F}_{13}$ & $\mathcal{F}_{9}$\\
+\midrule
+\texttt{age} & Age (years) & yes & yes\\
+\texttt{sex} & Sex code & yes & yes\\
+\texttt{cp} & Chest-pain type & yes & yes\\
+\texttt{trestbps} & Resting blood pressure & yes & yes\\
+\texttt{chol} & Serum cholesterol & yes & --\\
+\texttt{fbs} & Fasting blood sugar $>120$ mg/dL & yes & yes\\
+\texttt{restecg} & Resting electrocardiogram category & yes & yes\\
+\texttt{thalach} & Maximum heart rate achieved & yes & yes\\
+\texttt{exang} & Exercise-induced angina & yes & yes\\
+\texttt{oldpeak} & Exercise-induced ST depression & yes & yes\\
+\texttt{slope} & Slope of peak exercise ST segment & yes & --\\
+\texttt{ca} & Major vessels observed by fluoroscopy & yes & --\\
+\texttt{thal} & Thalassemia/test-result category & yes & --\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 Scores computed on $\mathcal{F}_{13}$ and $\mathcal{F}_{9}$ answer different questions
 and are \emph{not} comparable as if only the hospital had changed. We keep them
 separate throughout.
@@ -378,10 +397,8 @@ standard error of the AUC at this sample size; the neural network is not competi
 \label{fig:internal}
 \end{figure}
 
-Taken alone, \cref{tab:internal} would support a confident claim: an
-$\mathrm{AUC}\approx0.91$ classifier for coronary artery disease. The remainder of the
-paper is an argument that this claim is not yet a statement about anything outside
-Cleveland.
+Evaluated alone, \cref{tab:internal} suggests strong discrimination within Cleveland
+($\mathrm{AUC}\approx0.91$). It provides no evidence of performance outside that cohort.
 
 \subsection{The transfer matrix}
 \cref{fig:matrix} shows the full $4\times4$ directed matrix per model, and
@@ -436,7 +453,7 @@ Switzerland conceals a factor-of-two difference in difficulty.
 
 \paragraph{The source cohort dominates}
 Reading \cref{fig:matrix} by rows rather than columns is more informative.
-Switzerland as a \emph{source} is catastrophic for the two linear-ish learners: with
+Switzerland performs poorly as a \emph{source} for logistic regression and the MLP: with
 $93.5\%$ of Swiss patients diseased, the fitted logistic model sees almost no negative
 examples and transfers at $\mathrm{AUC}=0.576$ and $0.667$ to Cleveland and Hungary---
 barely above chance. The random forest, whose bootstrap resampling and balanced class
@@ -447,9 +464,8 @@ leaves only eight negative patients to rank against.
 
 \paragraph{Model ranking is not stable across pairs}
 Logistic regression wins five of twelve pairs, the random forest six, the MLP one. No
-model dominates. A practitioner selecting a model from a single held-out target would
-reach a different conclusion depending on which target they happened to hold out---which
-is precisely the failure mode that motivates reporting the whole matrix.
+model dominates. Selecting a model using only one held-out target would produce different
+rankings for different target cohorts. This motivates reporting the complete matrix.
 
 \begin{figure}[t]
 \centering
@@ -467,7 +483,7 @@ $\Delta=-0.025$: its macro-average external AUC \emph{exceeds} its macro-average
 internal AUC. Read naively, this says that the random forest performs better on
 hospitals it has never seen than on the hospital it was trained on, which is not a
 coherent claim about robustness. The correct reading is that the two averages are taken
-over different populations: the internal average is dragged down by Switzerland's
+over different populations: the internal average is lowered by Switzerland's
 near-degenerate within-site cross-validation ($0.647$) and VA's ($0.648$), whereas the
 external average includes many transfers \emph{into} the two well-behaved cohorts.
 
@@ -498,10 +514,10 @@ would select the weakest model.}
 \label{fig:gap}
 \end{figure}
 
-The MLP illustrates the complementary trap. Its gap is the smallest in magnitude
+The MLP illustrates a complementary limitation. Its gap is the smallest in magnitude
 ($+0.003$), which under a $|\Delta|$-minimising selection rule would make it the ``most
 robust'' model. But its absolute external AUC is the lowest of the three ($0.709$). A
-model that is uniformly mediocre everywhere has a small gap by construction. Gap
+model with uniformly lower performance can have a small gap by construction. Gap
 minimisation and utility maximisation are different objectives, and only the latter is
 clinically meaningful.
 
@@ -559,20 +575,19 @@ the matrix structure and not from a third decimal place. Finally, the binarisati
 \cref{eq:target} discards severity information that a graded outcome would retain.
 
 \section{Conclusion}
-External validity is a matrix of source--target behaviours, not a badge earned from one
-held-out split. On the four UCI heart-disease cohorts, a model with
+External validity cannot be established by one held-out split. On the four UCI
+heart-disease cohorts, a model with
 $\mathrm{AUC}=0.910$ under internal validation transports at anywhere between $0.571$
 and $0.888$ depending on which pair of hospitals is considered, and the scalar
 generalization gap is capable of ranking the weakest model first. We recommend that
 multi-site clinical machine-learning studies report the full directed transfer matrix,
-report absolute target performance, and treat the source cohort's recording quality as a
-first-class experimental variable.
+report absolute target performance, and model source-cohort recording quality as an
+explicit experimental variable.
 
 \section*{Data and Code Availability}
-The cohorts are the four public UCI Heart Disease files named
-\texttt{processed.\textit{site}.data}, where \textit{site} ranges over
-\texttt{cleveland}, \texttt{hungarian}, \texttt{switzerland}, and
-\texttt{va}. The analysis notebook,
+The cohorts are the four public UCI Heart Disease files: \texttt{processed.cleveland.data},
+\texttt{processed.hungarian.data}, \texttt{processed.switzerland.data}, and
+\texttt{processed.va.data}. The analysis notebook,
 the exported pairwise score table, and the figure-generation script accompanying this
 manuscript reproduce every number reported here.
 
